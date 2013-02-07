@@ -2,16 +2,16 @@ require "uspec/version"
 
 module Uspec
   def spec description
-    return puts("#{yellow('pending:')} #{description}") unless block_given?
+    print ' -- ', description
 
-    print '-- ', description
+    return puts(': ' + yellow('pending') + vspace) unless block_given?
 
     begin
       result = yield
     rescue => result
     end
 
-    print ': ', colorize(result), "\n"
+    print ': ', colorize(result, caller), "\n"
   end
 
   module Color
@@ -37,22 +37,49 @@ module Uspec
       esc(0) + text.to_s
     end
 
-    def colorize result
+    def colorize result, source
       if result == true then
         green result
       elsif result == false then
         red result
       elsif result.is_a? Exception then
-        red("error (exception)") + vspace + hspace + result.message + vspace + white(trace result)
+        [
+          red('Exception'), vspace,
+          hspace, 'Spec encountered an Exception ', newline,
+          hspace, 'in spec at ', source.first, vspace,
+          hspace, message(result), vspace,
+          white(trace result)
+        ].join
       else
-        red("error (unknown result)") + vspace + hspace + result.to_s + vspace
+        [
+          red('Unknown Result'), vspace,
+          hspace, 'Spec did not return a boolean value ', newline,
+          hspace, 'in spec at ', source.first, vspace,
+          hspace, red(classinfo(result)), result.inspect, newline
+        ].join
       end
     end
 
     def trace error
       error.backtrace.inject(String.new) do |text, line|
-        text << hspace + line + "\n"
+        text << hspace + line + newline
       end
+    end
+
+    def message error
+      red(classinfo error) + error.message
+    end
+
+    def classinfo object
+      "#{classify object} < #{superclass object}: "
+    end
+
+    def classify object
+      object.is_a?(Module) ? object : object.class
+    end
+
+    def superclass object
+      classify(object).superclass
     end
 
     def hspace
@@ -60,10 +87,14 @@ module Uspec
     end
 
     def vspace
-      "\n\n"
+      newline + newline
     end
 
-  private
+    def newline
+      $/
+    end
+
+    private
 
     def method_missing name, *args, &block
       if colors.keys.include? name then
@@ -75,7 +106,7 @@ module Uspec
 
   end
 
-private
+  private
 
   include Color
 end
