@@ -8,9 +8,9 @@ Gem::Specification.new do |gem|
   gem.version       = Uspec::VERSION
   gem.authors       = ["Anthony Cook"]
   gem.email         = ["anthonymichaelcook@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Uspec is a shiny little spec framework for your apps! Unlike other testing frameworks there's no need for matchers, there can only be one assertion per test, and you never have to worry that your tests lack assertions.}
+  gem.summary       = %q{a shiny little spec framework for your apps!}
+  gem.homepage      = "http://github.com/acook/uspec#readme"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
