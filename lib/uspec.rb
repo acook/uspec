@@ -1,20 +1,21 @@
-require "uspec/version"
+require_relative 'uspec/version'
 
 module Uspec
   def spec description
     print ' -- ', description
 
-    return puts(': ' + yellow('pending') + vspace) unless block_given?
+    return puts(': ' + Color.yellow('pending') + Color.vspace) unless block_given?
 
     begin
       result = yield
     rescue => result
     end
 
-    print ': ', colorize(result, caller), "\n"
+    print ': ', Color.colorize(result, caller), "\n"
   end
 
   module Color
+    module_function
 
     def colors
       {
@@ -94,8 +95,6 @@ module Uspec
       $/
     end
 
-    private
-
     def method_missing name, *args, &block
       if colors.keys.include? name then
         color name, *args
@@ -105,10 +104,6 @@ module Uspec
     end
 
   end
-
-  private
-
-  include Color
 end
 
 
