@@ -1,5 +1,5 @@
 require_relative '../lib/uspec'
-include Uspec
+extend Uspec
 
 def capture
   readme, writeme = IO.pipe
@@ -43,4 +43,8 @@ spec 'marks test as pending when no block supplied' do
   end
 
   output.include? 'pending'
+end
+
+spec 'should not define DSL methods on arbitrary objects' do
+  !(Array.respond_to? :spec)
 end

@@ -1,20 +1,15 @@
 require_relative 'uspec/version'
 require_relative 'uspec/formatter'
+require_relative 'uspec/dsl'
 
 module Uspec
-  def spec description
-    formatter = Uspec::Formatter.new
+  def self.included object
+    warn 'Use extend instead of include.'
+    exit
+  end
 
-    print ' -- ', description
-
-    return puts(': ' + formatter.yellow('pending') + formatter.vspace) unless block_given?
-
-    begin
-      result = yield
-    rescue => result
-    end
-
-    print ': ', formatter.colorize(result, caller), "\n"
+  def self.extended object
+    object.extend Uspec::DSL
   end
 end
 
