@@ -85,11 +85,27 @@ If you aren't ready to fill out a spec, maybe as a reminder to add functionality
 spec 'a feature I have not implemented yet'
 ```
 
-output:
+When you run the test Uspec will helpfully display:
 
 ```
  -- a feature I have not implemented yet: pending
 ```
+
+What if you want to test that an error has occured? Just use Ruby!
+
+```ruby
+spec 'calling AwesomeMcCoolname.awesomeness without specifying the awesomeness level should explode' do
+  begin
+    AwesomeMcCoolname.awesomeness
+  rescue => error
+    error.class == ArgumentError || raise
+  end
+end
+```
+
+If there's no error, then Uspec will see the result of the method call (whatever it might be).
+If the wrong Exception is raised, then because of reraising (by just calling `raise` without parameters),
+Ruby will dutifully pass along the error for Uspec to display.
 
 Installation
 ------------
