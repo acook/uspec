@@ -70,13 +70,32 @@ end
 
 Then Uspec will let you know:
 
-```
+```ruby
  -- AwesomeMcCoolname.generate creates a badass name: Unknown Result
  
     Spec did not return a boolean value
     at uspec/awesome_mc_coolname_spec.rb:6: in `<main>'
     
     Integer < Numeric: 5
+```
+
+Instead of `=~` (which returns either index or nil) Ruby has the nifty `include?` method, which returns a boolean:
+
+```ruby
+spec 'AwesomeMcCoolname.generate creates a cool name' do
+  AwesomeMcCoolname.generate.include? 'Badass'
+end
+```
+
+If you really need to regex, you can always use Ruby's `!!` idiom to coerce a boolean out of any result, 
+but its more precise to specify the index if you know it. 
+And you can always toss in an `||` to drop in more information if a comparison fails too:
+
+```ruby
+spec 'AwesomeMcCoolname.generate creates a cool name' do
+  index = AwesomeMcCoolname.generate =~ /Badass/
+  index == 0 || index
+end
 ```
 
 If you aren't ready to fill out a spec, maybe as a reminder to add functionality later, just leave off the block and it will be marked as `pending`:
