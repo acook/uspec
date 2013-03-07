@@ -6,6 +6,7 @@ Uspec is a shiny little testing framework for your apps!
     Anthony M. Cook 2013
 
 [![Code Climate](https://codeclimate.com/github/acook/uspec.png)](https://codeclimate.com/github/acook/uspec)
+[![Build Status](https://travis-ci.org/acook/uspec.png?branch=master)](https://travis-ci.org/acook/uspec)
 
 Philosophy / Why Uspec?
 -----------------------
@@ -52,12 +53,12 @@ If it throws an error:
 
 ```
  -- AwesomeMcCoolname.generate creates a cool name: Exception
- 
+
     Encountered an Exception while running spec
     at uspec/awesome_mc_coolname_spec.rb:3: in `<main>'
-    
+
     RuntimeError < StandardError: 'wtf'
-    
+
     /Users/Dude/Projects/Awesome/lib/awesome_mc_coolname.rb:18:in `explode'
     uspec/awesome_mc_coolname_spec.rb:4:in `block in <main>'
 ```
@@ -74,10 +75,10 @@ Then Uspec will let you know:
 
 ```ruby
  -- AwesomeMcCoolname.generate creates a badass name: Unknown Result
- 
+
     Spec did not return a boolean value
     at uspec/awesome_mc_coolname_spec.rb:6: in `<main>'
-    
+
     Integer < Numeric: 5
 ```
 
@@ -89,8 +90,8 @@ spec 'AwesomeMcCoolname.generate creates a cool name' do
 end
 ```
 
-If you really need to regex, you can always use Ruby's `!!` idiom to coerce a boolean out of any result, 
-but its more precise to specify the index if you know it. 
+If you really need to regex, you can always use Ruby's `!!` idiom to coerce a boolean out of any result,
+but its more precise to specify the index if you know it.
 And you can always toss in an `||` to drop in more information if a comparison fails too:
 
 ```ruby
