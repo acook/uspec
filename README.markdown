@@ -5,6 +5,8 @@ Uspec is a shiny little testing framework for your apps!
 
     Anthony M. Cook 2013
 
+[![Code Climate](https://codeclimate.com/github/acook/uspec.png)](https://codeclimate.com/github/acook/uspec)
+
 Philosophy / Why Uspec?
 -----------------------
 
