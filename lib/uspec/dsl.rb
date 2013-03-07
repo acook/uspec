@@ -12,6 +12,7 @@ module Uspec
       rescue => result
       end
 
+      Uspec::Stats.results << result
       print ': ', formatter.colorize(result, caller), "\n"
     end
   end
