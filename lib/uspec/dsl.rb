@@ -5,7 +5,7 @@ module Uspec
 
       print ' -- ', description
 
-      return puts(': ' + formatter.yellow('pending') + formatter.vspace) unless block_given?
+      return print(': ' + formatter.yellow('pending') + formatter.vspace) unless block_given?
 
       begin
         result = yield
