@@ -5,13 +5,14 @@ Uspec is a shiny little testing framework for your apps!
 
     Anthony M. Cook 2013
 
-[![Code Climate](https://codeclimate.com/github/acook/uspec.png)](https://codeclimate.com/github/acook/uspec)
 [![Build Status](https://travis-ci.org/acook/uspec.png?branch=master)](https://travis-ci.org/acook/uspec)
+[![Code Climate](https://codeclimate.com/github/acook/uspec.png)](https://codeclimate.com/github/acook/uspec)
+[![Still Maintained](http://stillmaintained.com/acook/uspec.png)](http://stillmaintained.com/acook/uspec)
 
 Philosophy / Why Uspec?
 -----------------------
 
-Unlike other testing frameworks there's no need for matchers, there can only be one assertion per test, and you never have to worry that your tests lack assertions.
+Unlike other testing frameworks there's no need for special matchers, there can only be one assertion per test, and you never have to worry that your tests lack assertions.
 
 That's because when the `spec` block is evaluated the return value is used (in a very ruby-like way) to determine the validity of the statement. Standard Ruby comparisons are your friend! No more digging around in your test framework's documentation to figure out what matcher you're supposed to use.
 
