@@ -12,11 +12,21 @@ Uspec is a shiny little testing framework for your apps!
 Philosophy / Why Uspec?
 -----------------------
 
-Unlike other testing frameworks there's no need for special matchers, there can only be one assertion per test, and you never have to worry that your tests lack assertions.
+Unlike other testing frameworks there's no need for special matchers, 
+there can only be one assertion per test, 
+and you never have to worry that your tests lack assertions.
 
-That's because when the `spec` block is evaluated the return value is used (in a very ruby-like way) to determine the validity of the statement. Standard Ruby comparisons are your friend! No more digging around in your test framework's documentation to figure out what matcher you're supposed to use.
+That's because when the `spec` block is evaluated the return value is used (in a very ruby-like way) 
+to determine the validity of the statement. Standard Ruby comparisons are your friend! 
+No more digging around in your test framework's documentation to figure out what matcher you're supposed to use.
+This also means no monkey patching core classes!
 
-You can't tell here in the docs, but Uspec's output is in beautiful ansi technicolor, with red for failures, green for successes, and yellow for pending specs. Download it and give it a show, its painless and uber easy to use. :)
+You can't tell here in the docs, but Uspec's output is in beautiful ansi technicolor, 
+with red for failures, green for successes, and yellow for pending specs. Here's a screenshot:
+
+![Screenshot!](http://i.imgur.com/M2F5YvO.png)
+
+Download it and give it a shot, it's painless and uber easy to use. :)
 
 Usage
 -----
