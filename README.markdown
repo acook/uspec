@@ -66,7 +66,7 @@ usage: uspec [<file_or_path>...]
 - Without arguments the `uspec` command will automatially look for `spec` and `uspec` directories and load any `*_spec.rb` files inside them. 
 - You can also pass in arbitrary files and it will attempt to run them as specs.
 - If you pass in directories `uspec` will find and run any specs inside them.
-- Uspec will return `0` if all specs pass and `1` if they all pass.
+- Uspec will return `0` if all specs pass and `255` if any fail.
 
 Syntax
 ------
@@ -81,19 +81,32 @@ spec 'AwesomeMcCoolname.generate creates a cool name' do
 end
 ```
 
-If it passes:
+That's it!
+
+Output
+------
+
+Examples of Uspec's output below!
+
+### Success
+
+If a spec passes:
 
 ```
  -- AwesomeMcCoolname.generate creates a cool name: true
 ```
 
-If it fails:
+### Failure
+
+If a spec fails:
 
 ```
  -- AwesomeMcCoolname.generate creates a cool name: false
 ```
 
-If it throws an error:
+### Exception
+
+If the spec throws an error:
 
 ```
  -- AwesomeMcCoolname.generate creates a cool name: Exception
@@ -106,6 +119,8 @@ If it throws an error:
     /Users/Dude/Projects/Awesome/lib/awesome_mc_coolname.rb:18:in `explode'
     uspec/awesome_mc_coolname_spec.rb:4:in `block in <main>'
 ```
+
+### Non-boolean values
 
 If you create a spec that doesn't return a boolean value (`nil` doesn't count either!) like this:
 
@@ -126,6 +141,23 @@ Then Uspec will let you know:
     Integer < Numeric: 5
 ```
 
+### Pending
+
+If you aren't ready to fill out a spec, maybe as a reminder to add functionality later, just leave off the block and it will be marked as `pending`:
+
+```ruby
+spec 'a feature I have not implemented yet'
+```
+
+When you run the test Uspec will helpfully display:
+
+```
+ -- a feature I have not implemented yet: pending
+```
+
+Tips & Tricks
+-------------
+
 Instead of `=~` (which returns either an `Integer` index or `nil`) Ruby has the nifty `include?` method, which returns a boolean:
 
 ```ruby
@@ -145,18 +177,6 @@ spec 'AwesomeMcCoolname.generate creates a cool name' do
 end
 ```
 
-If you aren't ready to fill out a spec, maybe as a reminder to add functionality later, just leave off the block and it will be marked as `pending`:
-
-```ruby
-spec 'a feature I have not implemented yet'
-```
-
-When you run the test Uspec will helpfully display:
-
-```
- -- a feature I have not implemented yet: pending
-```
-
 What if you want to test that an error has occured? Just use Ruby!
 
 ```ruby
@@ -173,21 +193,43 @@ If there's no error, then Uspec will see the result of the method call (whatever
 If the wrong Exception is raised, then because of reraising (by just calling `raise` without parameters),
 Ruby will dutifully pass along the error for Uspec to display.
 
-Optional
---------
+Assertions & Debugging
+----------------------
 
-If you don't want to use the `uspec` helper executable for any reason, it's no problem at all.
-You can load Uspec directly into a test file and use it with this incantation:
+You can also use `uspec` to track assertions in an application or any object you want. Every spec block you use will be tracked and recorded. It's really no problem at all to do.
+
+You can load Uspec's features directly into a class and use its DSL:
 
 ```ruby
-# my_test_spec.rb
 require 'uspec'
-extend Uspec::DSL
+
+class MyFoo
+  extend Uspec::DSL
+  
+  def assert
+    spec 'foo is valid' do
+      false
+    end
+  end
+end
+
+MyFoo.new.assert
 ```
 
-From there you can just run the file with ruby: `ruby my_test_spec.rb`
+If there are any specs that fail, your application will exit with a `255``. 
 
-Try using `extend Uspec::DSL` inside a module or a block of code for extra fun!
+```
+$ ruby foo.rb
+ -- foo is valid: false
+$ echo $?
+255
+```
+
+Uspec is just Ruby
+------------------
+
+If for some reason you don't want to use the `uspec` command, you can `require 'uspec'` and `extend Uspec::DSL`. 
+From there you can just run the file with ruby: `ruby my_test_spec.rb`
 
 Contributing
 ------------
