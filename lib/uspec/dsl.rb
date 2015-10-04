@@ -1,5 +1,6 @@
 module Uspec
   module DSL
+    module_function
     def spec description
       formatter = Uspec::Formatter.new
 
