@@ -47,12 +47,12 @@ Or install it yourself as:
 Quickstart
 ----------
 
-0. Create a `spec` or `uspec` directory to keep your specs in.
+0. Create a `spec` directory to keep your specs in.
 1. Name your specs ending with `_spec.rb`.
-2. To write a spec just use this format: `spec 'foos respond to bar' { MyFoo.new.respond_to? :bar }`
-2. Use the included `uspec` executable to run your specs! 
+2. Write some specs in Ruby using the `spec` method.
+2. Use the included `uspec` executable to run your specs.
 
-**Hint:** A lot of people also create a `spec_helper` (or `uspec_helper`) to put any global startup code inside and then `require_relative 'spec_helper'` in their tests.
+**Hint:** A lot of people also put `require_relative 'spec_helper'` in their tests for global start up code.
 
 Usage
 -----
@@ -63,7 +63,7 @@ uspec - minimalistic ruby testing framework
 usage: uspec [<file_or_path>...]
 ```
 
-- Without arguments the `uspec` command will automatially look for `spec` and `uspec` directories and load any `*_spec.rb` files inside them. 
+- Without arguments the `uspec` command will automatially look for `spec` directories and load any `*_spec.rb` files inside them. 
 - You can also pass in arbitrary files and it will attempt to run them as specs.
 - If you pass in directories `uspec` will find and run any specs inside them.
 - Uspec will return `0` if all specs pass and `255` if any fail.
@@ -158,6 +158,8 @@ When you run the test Uspec will helpfully display:
 Tips & Tricks
 -------------
 
+### String matching
+
 Instead of `=~` (which returns either an `Integer` index or `nil`) Ruby has the nifty `include?` method, which returns a boolean:
 
 ```ruby
@@ -165,6 +167,8 @@ spec 'AwesomeMcCoolname.generate creates a cool name' do
   AwesomeMcCoolname.generate.include? 'Badass'
 end
 ```
+
+### Regex matching
 
 If you really need to regex, you can always use Ruby's `!!` idiom to coerce a boolean out of any result,
 but its more precise to specify the index if you know it.
@@ -176,6 +180,8 @@ spec 'AwesomeMcCoolname.generate creates a cool name' do
   index == 0 || index
 end
 ```
+
+### Exceptions
 
 What if you want to test that an error has occured? Just use Ruby!
 
