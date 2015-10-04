@@ -3,14 +3,14 @@ Uspec
 
 Uspec is a shiny little testing framework for your apps!
 
-    Anthony M. Cook 2013
-
 [![Build Status](https://travis-ci.org/acook/uspec.png?branch=master)](https://travis-ci.org/acook/uspec)
 [![Code Climate](https://codeclimate.com/github/acook/uspec.png)](https://codeclimate.com/github/acook/uspec)
 [![Still Maintained](http://stillmaintained.com/acook/uspec.png)](http://stillmaintained.com/acook/uspec)
 
 Philosophy / Why Uspec?
 -----------------------
+
+> Uspec is just Ruby!
 
 Unlike other testing frameworks there's no need for special matchers, 
 there can only be one assertion per test, 
@@ -19,28 +19,61 @@ and you never have to worry that your tests lack assertions.
 That's because when the `spec` block is evaluated the return value is used (in a very ruby-like way) 
 to determine the validity of the statement. Standard Ruby comparisons are your friend! 
 No more digging around in your test framework's documentation to figure out what matcher you're supposed to use.
-This also means no monkey patching core classes!
+This also means *no monkey patching* core classes!
 
-You can't tell here in the docs, but Uspec's output is in beautiful ansi technicolor, 
+Uspec's output is in beautiful ansi technicolor, 
 with red for failures, green for successes, and yellow for pending specs. Here's a screenshot:
 
 ![Screenshot!](http://i.imgur.com/M2F5YvO.png)
 
-Download it and give it a shot, it's painless and uber easy to use. :)
+Uspec is tiny, painless, and easy to use. Download it and give it a shot. :)
+
+Installation
+------------
+
+Add this line to your application's Gemfile:
+
+    gem 'uspec'
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install uspec
+
+
+Quickstart
+----------
+
+0. Create a `spec` or `uspec` directory to keep your specs in.
+1. Name your specs ending with `_spec.rb`.
+2. To write a spec just use this format: `spec 'foos respond to bar' { MyFoo.new.respond_to? :bar }`
+2. Use the included `uspec` executable to run your specs! 
+
+**Hint:** A lot of people also create a `spec_helper` (or `uspec_helper`) to put any global startup code inside and then `require_relative 'spec_helper'` in their tests.
 
 Usage
 -----
 
-I suggest creating a `uspec` directory in your project folder to put your specs in. Then you'll need this incantation:
-
-```ruby
-require 'uspec'
-extend Uspec
+``` 
+$ uspec --help
+uspec - minimalistic ruby testing framework
+usage: uspec [<file_or_path>...]
 ```
 
-You can slot it in the top of your test file, or if you have other setup code you can put it in a `uspec_helper.rb` and `relative_require 'uspec_helper'` in them instead.
+- Without arguments the `uspec` command will automatially look for `spec` and `uspec` directories and load any `*_spec.rb` files inside them. 
+- You can also pass in arbitrary files and it will attempt to run them as specs.
+- If you pass in directories `uspec` will find and run any specs inside them.
+- Uspec will return `0` if all specs pass and `1` if they all pass.
 
-Then all you have to do is put in your specs:
+Syntax
+------
+
+Uspec is **just Ruby**. The DSL is minimal - there's only one method to remember!
+
+Writing a spec is easy:
 
 ```ruby
 spec 'AwesomeMcCoolname.generate creates a cool name' do
@@ -93,7 +126,7 @@ Then Uspec will let you know:
     Integer < Numeric: 5
 ```
 
-Instead of `=~` (which returns either index or nil) Ruby has the nifty `include?` method, which returns a boolean:
+Instead of `=~` (which returns either an `Integer` index or `nil`) Ruby has the nifty `include?` method, which returns a boolean:
 
 ```ruby
 spec 'AwesomeMcCoolname.generate creates a cool name' do
@@ -140,20 +173,21 @@ If there's no error, then Uspec will see the result of the method call (whatever
 If the wrong Exception is raised, then because of reraising (by just calling `raise` without parameters),
 Ruby will dutifully pass along the error for Uspec to display.
 
-Installation
-------------
+Optional
+--------
 
-Add this line to your application's Gemfile:
+If you don't want to use the `uspec` helper executable for any reason, it's no problem at all.
+You can load Uspec directly into a test file and use it with this incantation:
 
-    gem 'uspec'
+```ruby
+# my_test_spec.rb
+require 'uspec'
+extend Uspec::DSL
+```
 
-And then execute:
+From there you can just run the file with ruby: `ruby my_test_spec.rb`
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install uspec
+Try using `extend Uspec::DSL` inside a module or a block of code for extra fun!
 
 Contributing
 ------------
@@ -163,3 +197,8 @@ Contributing
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+Author
+------
+
+> Anthony M. Cook 2013-2015
