@@ -158,6 +158,8 @@ When you run the test Uspec will helpfully display:
 Tips & Tricks
 -------------
 
+Because there's no matchers and only one method there's no reference documentation to look at, so here are some ideas to get you going!
+
 ### String matching
 
 Instead of `=~` (which returns either an `Integer` index or `nil`) Ruby has the nifty `include?` method, which returns a boolean:
