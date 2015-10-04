@@ -6,7 +6,7 @@ require_relative 'uspec/stats'
 module Uspec
   def self.included object
     warn 'Use extend instead of include.'
-    exit
+    exit 2
   end
 
   def self.extended object
