@@ -5,7 +5,6 @@ Uspec is a shiny little testing framework for your apps!
 
 [![Build Status](https://travis-ci.org/acook/uspec.png?branch=master)](https://travis-ci.org/acook/uspec)
 [![Code Climate](https://codeclimate.com/github/acook/uspec.png)](https://codeclimate.com/github/acook/uspec)
-[![Still Maintained](http://stillmaintained.com/acook/uspec.png)](http://stillmaintained.com/acook/uspec)
 
 Philosophy / Why Uspec?
 -----------------------
@@ -251,4 +250,4 @@ Contributing
 Author
 ------
 
-> Anthony M. Cook 2013-2015
+> Anthony M. Cook 2013-2016
