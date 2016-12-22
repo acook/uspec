@@ -44,7 +44,7 @@ class Uspec::Exec
       puts "#{path.basename path.extname}:"
       Uspec::DSL.instance_eval(path.read, path.to_s)
     else
-      warn "spec/path not found: #{path}"
+      warn "path not found: #{path}"
     end
   end
 
