@@ -5,7 +5,12 @@ module Uspec::Exec
   module_function
 
   def run_specs paths
-    paths = ['spec', 'uspec'] if paths.empty?
+    if paths.empty? then
+      ['spec', 'uspec', 'test'].each do |path|
+        paths << path if Pathname.new(path).directory?
+      end
+    end
+
     @pwd = Pathname.pwd
 
     paths.each do |path|
