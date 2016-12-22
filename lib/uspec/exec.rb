@@ -1,18 +1,35 @@
 require 'pathname'
 require_relative '../uspec'
 
-module Uspec::Exec
-  module_function
+class Uspec::Exec
+  class << self
+    def usage
+      warn "uspec - minimalistic ruby testing framework"
+      warn "usage: #{File.basename $0} [<file_or_path>...]"
+    end
 
-  def run_specs paths
-    if paths.empty? then
+    def run_specs paths
+      uspec_exec = self.new paths
+      uspec_exec.run_paths
+    end
+  end
+
+  def initialize paths
+    @paths = paths
+    @pwd = Pathname.pwd.freeze
+  end
+
+  def paths
+    if @paths.empty? then
       ['spec', 'uspec', 'test'].each do |path|
-        paths << path if Pathname.new(path).directory?
+        @paths << path if Pathname.new(path).directory?
       end
     end
 
-    @pwd = Pathname.pwd
+    @paths
+  end
 
+  def run_paths
     paths.each do |path|
       run @pwd.join path
     end
@@ -31,9 +48,4 @@ module Uspec::Exec
     end
   end
 
-  def usage
-    warn "uspec - minimalistic ruby testing framework"
-    warn "usage: #{File.basename $0} [<file_or_path>...]"
-    exit 1
-  end
 end

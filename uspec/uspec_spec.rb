@@ -1,21 +1,4 @@
-require_relative '../lib/uspec'
-extend Uspec
-
-def capture
-  readme, writeme = IO.pipe
-  pid = fork do
-    $stdout.reopen writeme
-    readme.close
-
-    yield
-  end
-
-  writeme.close
-  output = readme.read
-  Process.waitpid(pid)
-
-  output
-end
+require_relative 'uspec_helper'
 
 spec 'catches errors' do
   output = capture do
