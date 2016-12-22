@@ -48,3 +48,15 @@ end
 spec 'should not define DSL methods on arbitrary objects' do
   !(Array.respond_to? :spec)
 end
+
+spec 'returns the number of failures' do
+  capture do
+    50.times do
+      spec 'fail' do
+        false
+      end
+    end
+  end
+
+  $?.exitstatus == 50 || $?
+end
