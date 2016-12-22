@@ -14,7 +14,8 @@ module Uspec
       end
 
       def exit_code
-        results.all?{|result| result == true} ? 0 : 255
+        failures = results.count{|result| !result }
+        failures > 255 ? 255 : failures
       end
     end
   end
