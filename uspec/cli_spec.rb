@@ -1,4 +1,5 @@
 require_relative 'uspec_helper'
+require 'open3'
 
 spec 'shows usage' do
   output = capture do
@@ -24,4 +25,24 @@ spec 'runs an individual spec' do
   end
 
   output.include? 'I love passing tests'
+end
+
+spec 'exits with failure status if a test has a broken require' do
+  path =  Pathname.new(__FILE__).parent.join('test_specs', 'broken_require_spec')
+
+  capture do
+    exec "bin/uspec #{path}"
+  end
+
+  $?.exitstatus == 1 || $?
+end
+
+spec 'displays information about test file with broken require' do
+  path =  Pathname.new(__FILE__).parent.join('test_specs', 'broken_require_spec')
+
+  output = capture do
+    exec "bin/uspec #{path}"
+  end
+
+  output.include? 'cannot load such file'
 end

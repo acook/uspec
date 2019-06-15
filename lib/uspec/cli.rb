@@ -54,6 +54,11 @@ class Uspec::CLI
     else
       warn "path not found: #{path}"
     end
+  rescue LoadError => result
+    formatter = Uspec::Formatter.new
+    print ' -- FAILED TO LOAD TEST FILE DUE TO: '
+    Uspec::Stats.results << result
+    puts formatter.colorize(result, result.backtrace)
   end
 
 end
