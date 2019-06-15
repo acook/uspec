@@ -27,10 +27,10 @@ spec 'runs an individual spec' do
   output.include? 'I love passing tests'
 end
 
-spec 'exits with failure status if a test has a broken require' do
+spec 'broken requires in test files count as test failures' do
   path =  Pathname.new(__FILE__).parent.join('test_specs', 'broken_require_spec')
 
-  capture do
+  output = capture do
     exec "bin/uspec #{path}"
   end
 
@@ -44,5 +44,5 @@ spec 'displays information about test file with broken require' do
     exec "bin/uspec #{path}"
   end
 
-  output.include? 'cannot load such file'
+  output.include?('cannot load such file') || output
 end

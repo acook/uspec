@@ -33,15 +33,19 @@ spec 'should not define DSL methods on arbitrary objects' do
 end
 
 spec 'exit code is the number of failures' do
-  capture do
-    50.times do
-      spec 'fail' do
+  expected = 50
+  output = capture do
+    expected.times do |count|
+      spec "fail ##{count + 1}" do
         false
       end
     end
-  end
 
-  $?.exitstatus == 50 || $?
+    puts(Uspec::Stats.inspect) unless Uspec::Stats.exit_code == expected
+  end
+  actual = $?.exitstatus
+
+  actual == expected || puts("", output) || $?
 end
 
 spec 'if more than 255 failures, exit status is 255' do

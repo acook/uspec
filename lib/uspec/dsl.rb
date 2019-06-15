@@ -1,20 +1,25 @@
+require_relative "result"
+
 module Uspec
   module DSL
     module_function
     def spec description
-      formatter = Uspec::Formatter.new
+      terminal = Uspec::Terminal
 
       print ' -- ', description
 
-      return print(': ' + formatter.yellow('pending') + formatter.vspace) unless block_given?
+      return print(': ' + terminal.yellow('pending') + terminal.vspace) unless block_given?
 
       begin
-        result = yield
-      rescue => result
+        raw_result = yield
+      rescue => raw_result
       end
 
+      result = Result.new description, raw_result, caller
+
       Uspec::Stats.results << result
-      print ': ', formatter.colorize(result, caller), "\n"
+
+      print ': ', result.info, "\n"
     rescue => error
       message = <<-MSG
         Uspec encountered an internal error, please report this bug!
@@ -24,7 +29,7 @@ module Uspec
       MSG
       puts
       warn message
-      Uspec::Stats.results << [message, error]
+      Uspec::Stats.results << Result.new(message, error, caller)
     end
   end
 end

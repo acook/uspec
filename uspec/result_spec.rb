@@ -1,9 +1,9 @@
 require_relative "uspec_helper"
 
-formatter = Uspec::Formatter.new
+result = Uspec::Result.new "BasicObject Test", BasicObject.new, []
 
 spec "#colorize doesn't die when given a BasicObject" do
     expected = "#<BasicObject:"
-    actual = formatter.colorize(BasicObject.new, [])
+    actual = result.colorize
     actual.include?(expected) || actual
 end

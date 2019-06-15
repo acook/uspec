@@ -44,6 +44,7 @@ class Uspec::CLI
   end
 
   def run path
+    spec = nil
     if path.directory? then
       Pathname.glob(path.join('**', '**_spec.rb')).each do |spec|
         run spec
@@ -54,11 +55,18 @@ class Uspec::CLI
     else
       warn "path not found: #{path}"
     end
-  rescue LoadError => result
-    formatter = Uspec::Formatter.new
-    print ' -- FAILED TO LOAD TEST FILE DUE TO: '
-    Uspec::Stats.results << result
-    puts formatter.colorize(result, result.backtrace)
+  rescue Exception => error
+    message = <<-MSG
+      Uspec encountered an error when loading a test file!
+      This is probably a typo in the test file but if you think this is a bug in Uspec please report it!
+      https://github.com/acook/uspec/issues/new
+      Error may have occured in test file: #{spec || path || error.backtrace.first}
+      #{error.class} : #{error.message}
+      #{error.backtrace[0..2].join "\n\t"}
+    MSG
+    puts
+    warn message
+    ::Uspec::Stats.results << ::Uspec::Result.new(message, error, caller)
   end
 
 end

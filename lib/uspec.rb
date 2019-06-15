@@ -1,5 +1,4 @@
 require_relative 'uspec/version'
-require_relative 'uspec/formatter'
 require_relative 'uspec/dsl'
 require_relative 'uspec/stats'
 
@@ -14,4 +13,10 @@ module Uspec
   end
 end
 
-at_exit { exit Uspec::Stats.exit_code }
+at_exit do
+  failures = Uspec::Stats.exit_code
+  status = $!.respond_to?(:status) ? $!.status : 0
+  errors = ($! && $!.cause == nil) ? 0 : 1
+  code = [failures, status, errors].max
+  exit code
+end
