@@ -39,7 +39,7 @@ module Uspec
           red('Unknown Result'), vspace,
           hspace, 'Spec did not return a boolean value ', newline,
           hspace, 'in spec at ', source.first, vspace,
-          hspace, red(classinfo(result)), result.inspect, newline
+          hspace, red(classinfo(result)), inspector(result), newline
         ].join
       end
     end
@@ -55,25 +55,53 @@ module Uspec
     end
 
     def classinfo object
-      "#{classify object} < #{superclass object}: "
+      klass = superclass object
+      klass ? "#{classify object} < #{superclass object}: " : "#{classify object}: "
+    end
+
+    # Attempts to inspect an object
+    def inspector object
+      accepts(object, :inspect) ? object.inspect : "#<#{classify object}:0x#{get_id object}>"
     end
 
     # Returns the class of the object if it isn't already a class
-    # Compatible with BasicObject
     def classify object
-      is_class(object, Module) ? object : ::Kernel.instance_method(:class).bind(object).call
+      is_class(object, Module) ? object : safe_send(object, :class)
     end
 
     # Returns the superclass of the object
-    # Compatible with BasicObject
     def superclass object
-      ::Class.instance_method(:superclass).bind(classify(object)).call
+      ancestors(object)[2]
     end
 
     # Returns true if object is of type klass
-    # Compatible with BasicObject
     def is_class object, klass
-      ::Kernel.instance_method(:is_a?).bind(object).call(klass)
+      safe_send object, :is_a?, klass
+    end
+
+    # Returns true if the object accepts the given message
+    def accepts object, message
+      safe_send object, :respond_to?, message
+    end
+
+    # Gets the object ID of an object
+    def get_id object
+      object.__id__.to_s(16) rescue 0
+    end
+
+    # Obtain the singleton class of an object
+    def singleton object
+      class << object; self; end
+    end
+
+    # Collects the ancestors of an object
+    def ancestors object
+      safe_send singleton(object), :ancestors
+    end
+
+    # Works around BasicObject and other objects that are missing/overwrite important methods
+    def safe_send object, method, *args, &block
+      (Module === object ? Module : Object).instance_method(method).bind(object).call(*args, &block)
     end
 
     def hspace
