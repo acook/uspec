@@ -14,7 +14,8 @@ module Uspec
       end
 
       def exit_code
-        failures = results.count{|result| !result }
+        # checking for truthy isn't good enough, it must be exactly true!
+        failures = results.count{|result| result != true }
         failures > 255 ? 255 : failures
       end
     end
