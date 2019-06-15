@@ -26,7 +26,7 @@ module Uspec
         green result
       elsif result == false then
         red result
-      elsif result.is_a? Exception then
+      elsif is_class result, Exception then
         [
           red('Exception'), vspace,
           hspace, 'Spec encountered an Exception ', newline,
@@ -58,12 +58,22 @@ module Uspec
       "#{classify object} < #{superclass object}: "
     end
 
+    # Returns the class of the object if it isn't already a class
+    # Compatible with BasicObject
     def classify object
-      object.is_a?(Module) ? object : object.class
+      is_class(object, Module) ? object : ::Kernel.instance_method(:class).bind(object).call
     end
 
+    # Returns the superclass of the object
+    # Compatible with BasicObject
     def superclass object
-      classify(object).superclass
+      ::Class.instance_method(:superclass).bind(classify(object)).call
+    end
+
+    # Returns true if object is of type klass
+    # Compatible with BasicObject
+    def is_class object, klass
+      ::Kernel.instance_method(:is_a?).bind(object).call(klass)
     end
 
     def hspace
