@@ -1,9 +1,4 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/uspec/exec'
-
-if (ARGV & %w{-h --help -? /? /help}).empty? then
-  Uspec::Exec.run_specs ARGV
-else
-  Uspec::Exec.usage
-end
+require_relative '../lib/uspec/cli'
+Uspec::CLI.invoke ARGV

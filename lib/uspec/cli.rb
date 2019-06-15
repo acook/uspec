@@ -1,7 +1,7 @@
 require 'pathname'
 require_relative '../uspec'
 
-class Uspec::Exec
+class Uspec::CLI
   class << self
     def usage
       warn "uspec - minimalistic ruby testing framework"
@@ -9,8 +9,16 @@ class Uspec::Exec
     end
 
     def run_specs paths
-      uspec_exec = self.new paths
-      uspec_exec.run_paths
+      uspec_cli = self.new paths
+      uspec_cli.run_paths
+    end
+
+    def invoke args
+      if (args & %w[-h --help -? /?]).empty? then
+        run_specs args
+      else
+        usage
+      end
     end
   end
 
