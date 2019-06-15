@@ -16,7 +16,7 @@ end
 at_exit do
   failures = Uspec::Stats.exit_code
   status = $!.respond_to?(:status) ? $!.status : 0
-  errors = ($! && $!.cause == nil) ? 0 : 1
+  errors = $!.respond_to?(:cause) && $!.cause ? 1 : 0
   code = [failures, status, errors].max
   exit code
 end
