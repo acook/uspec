@@ -54,7 +54,7 @@ module Uspec
 
     # Attempts to inspect an object
     def inspector
-      klass.public_method_defined?(:inspect) ? raw.inspect : "#<#{klass}:0x#{get_id}>"
+      klass.public_instance_methods.include?(:inspect) ? raw.inspect : "#<#{klass}:0x#{get_id}>"
     end
 
     # Returns the class of the object if it isn't already a class
