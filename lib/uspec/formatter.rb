@@ -10,7 +10,7 @@ module Uspec
     end
 
     def color hue, text = nil
-      esc("3#{colors[hue]};1") + "#{text}#{normal}"
+      "#{esc "3#{colors[hue]};1"}#{text}#{normal}"
     end
 
     def esc seq
@@ -18,7 +18,7 @@ module Uspec
     end
 
     def normal text=nil
-      esc(0) + text.to_s
+      "#{esc 0}#{text}"
     end
 
     def colorize result, source
@@ -46,12 +46,12 @@ module Uspec
 
     def trace error
       error.backtrace.inject(String.new) do |text, line|
-        text << hspace + line + newline
+        text << "#{hspace}#{line}#{newline}"
       end
     end
 
     def message error
-      red(classinfo error) + error.message
+      "#{red classinfo error}#{error.message}"
     end
 
     def classinfo object
@@ -71,7 +71,7 @@ module Uspec
     end
 
     def vspace
-      newline + newline
+      "#{newline}#{newline}"
     end
 
     def newline
