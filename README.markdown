@@ -11,64 +11,24 @@ Philosophy / Why Uspec?
 
 > Uspec is just Ruby!
 
-Unlike other testing frameworks there's no need for special matchers, 
-there can only be one assertion per test, 
+Unlike other testing frameworks there's no need for special matchers,
+there can only be one assertion per test,
 and you never have to worry that your tests lack assertions.
 
-That's because when the `spec` block is evaluated the return value is used (in a very ruby-like way) 
-to determine the validity of the statement. Standard Ruby comparisons are your friend! 
+That's because when the `spec` block is evaluated the return value is used (in a very ruby-like way)
+to determine if the test has passed or failed. Standard Ruby comparisons are your friend!
 No more digging around in your test framework's documentation to figure out what matcher you're supposed to use.
 This also means *no monkey patching* core classes!
 
-Uspec's output is in beautiful ansi technicolor, 
+Uspec's output is in beautiful ansi technicolor,
 with red for failures, green for successes, and yellow for pending specs. Here's a screenshot:
 
 ![Screenshot!](http://i.imgur.com/M2F5YvO.png)
 
-Uspec is tiny, painless, and easy to use. Download it and give it a shot. :)
+Uspec is tiny, painless, and easy to use. Download it and give it a try!
 
-Installation
-------------
-
-Add this line to your application's Gemfile:
-
-    gem 'uspec'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install uspec
-
-
-Quickstart
-----------
-
-0. Create a `spec` directory to keep your specs in.
-1. Name your specs ending with `_spec.rb`.
-2. Write some specs in Ruby using the `spec` method.
-2. Use the included `uspec` executable to run your specs.
-
-**Hint:** A lot of people also put `require_relative 'spec_helper'` in their tests for global start up code.
-
-Usage
------
-
-``` 
-$ uspec --help
-uspec - minimalistic ruby testing framework
-usage: uspec [<file_or_path>...]
-```
-
-- Without arguments the `uspec` command will automatially look for `spec` directories and load any `*_spec.rb` files inside them. 
-- You can also pass in arbitrary files and it will attempt to run them as specs.
-- If you pass in directories `uspec` will find and run any specs inside them.
-- Uspec will return `0` if all specs pass and `255` if any fail.
-
-Syntax
-------
+Example
+-------
 
 Uspec is **just Ruby**. The DSL is minimal - there's only one method to remember!
 
@@ -82,10 +42,50 @@ end
 
 That's it!
 
+Installation
+------------
+
+Add this line to your application's Gemfile:
+
+    gem 'uspec'
+
+And then execute:
+
+    $ bundle
+
+Or install it directly with:
+
+    $ gem install uspec
+
+
+Quickstart
+----------
+
+0. Create a `spec` (or `uspec`) directory to keep your specs in.
+1. Name your specs ending with `_spec.rb`.
+2. Write some specs in Ruby using the `spec` method (example above).
+2. Use the included `uspec` executable to run your specs.
+
+**Hint:** A lot of people also put `require_relative 'spec_helper'` in their tests for shared code between tests.
+
+Commandline Usage
+-----------------
+
+```
+$ uspec --help
+uspec - minimalistic ruby testing framework
+usage: uspec [<file_or_path>...]
+```
+
+- Without arguments the `uspec` command will automatially look for `spec` and `uspec` directories and load any `*_spec.rb` files inside them.
+- You can also pass in arbitrary files and it will attempt to run them as specs.
+- If you pass in directories `uspec` will scan for and run any specs inside them.
+- Uspec will return the number of failures as its status code to the commandline, 0 if none.
+
 Output
 ------
 
-Examples of Uspec's output below!
+Wonder what Uspec looks like?
 
 ### Success
 
@@ -190,8 +190,8 @@ What if you want to test that an error has occured? Just use Ruby!
 spec 'calling AwesomeMcCoolname.awesomeness without specifying the awesomeness level should explode' do
   begin
     AwesomeMcCoolname.awesomeness
-  rescue => error
-    error.class == ArgumentError || raise
+  rescue ArgumentError => error
+    error.message.include?("Needs awesomeness level!") || raise
   end
 end
 ```
@@ -212,7 +212,7 @@ require 'uspec'
 
 class MyFoo
   extend Uspec::DSL
-  
+
   def assert
     spec 'foo is valid' do
       false
@@ -223,19 +223,19 @@ end
 MyFoo.new.assert
 ```
 
-If there are any specs that fail, your application will exit with a `255``. 
+If there are any specs that fail, your application will exit with an error code equal to the number of failures.
 
 ```
 $ ruby foo.rb
  -- foo is valid: false
 $ echo $?
-255
+1
 ```
 
 Uspec is just Ruby
 ------------------
 
-If for some reason you don't want to use the `uspec` command, you can `require 'uspec'` and `extend Uspec::DSL`. 
+If for some reason you don't want to use the `uspec` command, you can `require 'uspec'` and `extend Uspec::DSL`.
 From there you can just run the file with ruby: `ruby my_test_spec.rb`
 
 Contributing
@@ -250,4 +250,4 @@ Contributing
 Author
 ------
 
-> Anthony M. Cook 2013-2016
+> Anthony M. Cook 2013-2019
