@@ -17,6 +17,10 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
+  # due to require_relative semantics in 1.9.x and issues with BasicObject support in 2.0
+  # technically should still work in 2.0 but some of the test suite won't pass
+  gem.required_ruby_version = ">= 2.1"
+
   gem.add_development_dependency "pry"
   gem.add_development_dependency "pry-doc"
 end
