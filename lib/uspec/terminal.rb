@@ -12,7 +12,7 @@ module Uspec
     end
 
     def color hue, text = nil
-      "#{esc "3#{colors[hue]};1"}#{text}#{normal}"
+      "#{esc "3#{colors[hue]};1"}#{text}#{normal unless text.nil?}"
     end
 
     def esc seq
