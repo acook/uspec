@@ -11,7 +11,7 @@ module Uspec
     end
     attr_reader :spec, :raw, :source
 
-    def colorize
+    def pretty
       if raw == true then
         green raw
       elsif raw == false then
@@ -32,10 +32,6 @@ module Uspec
           hspace, red(klassinfo), inspector, newline
         ].join
       end
-    end
-
-    def info
-      colorize
     end
 
     def trace

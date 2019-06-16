@@ -19,7 +19,7 @@ module Uspec
 
       Uspec::Stats.results << result
 
-      print ': ', result.info, "\n"
+      print ': ', result.pretty, "\n"
     rescue => error
       message = <<-MSG
         Uspec encountered an internal error, please report this bug!
