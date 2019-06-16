@@ -8,7 +8,7 @@ module Uspec
 
       print ' -- ', description
 
-      return print(': ' + terminal.yellow('pending') + terminal.vspace) unless block_given?
+      return print(': ' + terminal.yellow('pending') + terminal.newline) unless block_given?
 
       begin
         raw_result = yield
