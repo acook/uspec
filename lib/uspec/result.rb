@@ -4,9 +4,9 @@ module Uspec
   class Result
     include Terminal
 
-    def initialize spec, raw_raw, source
+    def initialize spec, raw, source
       @spec = spec
-      @raw = raw_raw
+      @raw = raw
       @source = source
     end
     attr_reader :spec, :raw, :source
@@ -73,7 +73,7 @@ module Uspec
 
     # Returns the class of the object if it isn't already a class
     def klass
-      Module === raw ? object : ancestor_klasses[1]
+      Module === raw ? raw : ancestor_klasses[1]
     end
 
     # Returns the superclass of the object
