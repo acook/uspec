@@ -22,9 +22,10 @@ module Uspec
       print ': ', result.pretty, "\n"
     rescue => error
       message = <<-MSG
-        Uspec encountered an internal error, please report this bug!
-        https://github.com/acook/uspec/issues/new
         #{error.class} : #{error.message}
+
+        Uspec encountered an internal error, please report this bug: https://github.com/acook/uspec/issues/new
+
         #{error.backtrace.join "\n\t"}
       MSG
       puts
