@@ -28,3 +28,13 @@ spec "ensure parent object of BasicObject subclasses get a useful error message"
   actual =  result.pretty
   actual.include?(expected) || result.inspector
 end
+
+class ::InspectFail; def inspect; raise; end; end
+inspect_fail = InspectFail.new
+
+spec "display a useful error message when a user-defined inspect method fails" do
+  result = Uspec::Result.new "Inspect Fail Result", inspect_fail, []
+  expected = "raises an error"
+  actual =  result.pretty
+  actual.include?(expected) || result.inspector
+end

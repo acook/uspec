@@ -51,7 +51,7 @@ module Uspec
     # Attempts to inspect an object
     def inspector
       klass && klass.public_method_defined?(:inspect) ? raw.inspect : "#<#{klass}:0x#{get_id}>"
-    rescue NoMethodError => error
+    rescue Exception => error
       return "#<#{klass}:0x#{get_id}>" if error.message.include? get_id
 
       error_file, error_line, _ = error.backtrace[5].split ?:
@@ -63,6 +63,7 @@ module Uspec
       Uspec detected a bug in your source code!
       Calling #inspect on an object will recusively call #inspect on its instance variables and contents.
       If one of those contained objects does not have an #inspect method you will see this message.
+      You will also get this error if your #inspect method or one of its callees raises an error.
       This is most likely to happen with BasicObject and its subclasses.
 
       If you think this is a bug in Uspec please report it: https://github.com/acook/uspec/issues/new
