@@ -34,7 +34,7 @@ inspect_fail = InspectFail.new
 
 spec "display a useful error message when a user-defined inspect method fails" do
   result = Uspec::Result.new "Inspect Fail Result", inspect_fail, []
-  expected = "raises an error"
+  expected = "raises an exception"
   actual =  result.pretty
   actual.include?(expected) || result.inspector
 end
