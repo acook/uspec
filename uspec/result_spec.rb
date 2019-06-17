@@ -1,9 +1,30 @@
 require_relative "uspec_helper"
 
-result = Uspec::Result.new "BasicObject Test", BasicObject.new, []
+bo = BasicObject.new
 
 spec "#pretty doesn't die when given a BasicObject" do
-    expected = "#<BasicObject:"
-    actual = result.pretty
-    actual.include?(expected) || actual
+  result = Uspec::Result.new "BasicObject Result", bo, []
+  expected = "#<BasicObject:"
+  actual = result.pretty
+  actual.include?(expected) || actual
+end
+
+# If we don't prefix the classname with "::", Ruby defines it under an anonymous class
+class ::TestObject < BasicObject; end
+obj = TestObject.new
+
+spec "ensure BasicObject subclasses work" do
+  result = Uspec::Result.new "BasicObject Subclass Result", obj, []
+  expected = "#<TestObject:"
+  actual =  result.pretty
+  actual.include?(expected) || result.inspector
+end
+
+parent = [obj]
+
+spec "ensure parent object of BasicObject subclasses get a useful error message" do
+  result = Uspec::Result.new "BasicObject Parent Result", parent, []
+  expected = "BasicObject and its subclasses"
+  actual =  result.pretty
+  actual.include?(expected) || result.inspector
 end
