@@ -4,7 +4,7 @@ require_relative '../uspec'
 class Uspec::CLI
   class << self
     def usage
-      warn "uspec - minimalistic ruby testing framework"
+      warn "uspec v#{::Uspec::VERSION} - minimalistic ruby testing framework"
       warn "usage: #{File.basename $0} [<file_or_path>...]"
     end
 
@@ -14,7 +14,7 @@ class Uspec::CLI
     end
 
     def invoke args
-      if (args & %w[-h --help -? /?]).empty? then
+      if (args & %w[-h --help -? /? -v --version]).empty? then
         run_specs args
       else
         usage
