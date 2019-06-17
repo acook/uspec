@@ -1,0 +1,56 @@
+# Rubocop override settings
+
+AllCops:
+  TargetRubyVersion: 2.0
+
+Metrics/LineLength:
+  Max: 120
+  Exclude:
+    - config_module.gemspec
+    - "uspec/**/*"
+
+Naming/PredicateName:
+  Enabled: false
+
+Style/PreferredHashMethods:
+  Exclude:
+    - "**/*"
+
+Style/Documentation:
+  Enabled: false
+
+Style/MethodDefParentheses:
+  Enabled: false
+
+Style/ParallelAssignment:
+  Enabled: false
+
+Style/SingleLineMethods:
+  Enabled: false
+
+Style/Alias:
+  Enabled: false
+
+Style/CaseEquality:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes
+
+Layout/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Style/EnforcedStyleForMultiline:
+  EnforcedStyle: consistent_comma
+
+Naming/RescuedExceptionsVariableName:
+  PreferredName: error
