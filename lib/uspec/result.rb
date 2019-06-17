@@ -84,7 +84,7 @@ module Uspec
     end
 
     def inspect
-      "#{self.class} for `#{spec}` -> #{colorize}"
+      "#{self.class} for `#{spec}` -> #{pretty}"
     end
   end
 end
