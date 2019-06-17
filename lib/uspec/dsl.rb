@@ -26,7 +26,7 @@ module Uspec
 
         Uspec encountered an internal error, please report this bug: https://github.com/acook/uspec/issues/new
 
-        #{error.backtrace.join "\n\t"}
+\t#{error.backtrace.join "\n\t"}
       MSG
       puts
       warn message
