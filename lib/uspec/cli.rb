@@ -67,7 +67,10 @@ class Uspec::CLI
 
       If you think this is a bug in Uspec please report it: https://github.com/acook/uspec/issues/new
 
-      Error may have occured in file `#{spec || path || error_file}` on line ##{error_line}.
+      Error occured when loading test file `#{spec || path}`.
+      The origin of the error may be in file `#{error_file}` on line ##{error_line}.
+
+\t#{error.backtrace[0,3].join "\n\t"}
     MSG
     puts
     warn message
