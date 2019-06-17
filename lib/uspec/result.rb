@@ -55,12 +55,12 @@ module Uspec
 
     # Returns the class of the object if it isn't already a class
     def klass
-      Module === raw ? object : ancestors[1]
+      Module === raw ? object : ancestor_klasses[1]
     end
 
     # Returns the superclass of the object
     def superklass
-      ancestors[2]
+      ancestor_klasses[2]
     end
 
     # Gets the object ID of an object
@@ -71,6 +71,10 @@ module Uspec
     # Obtain the singleton class of an object
     def singleton
       @singleton ||= (class << raw; self; end) rescue raw.class
+    end
+
+    def ancestor_klasses
+      @ancestor_klasses ||= ancestors.select{|a| a.is_a? Class}
     end
 
     # Collects the ancestors of an object
