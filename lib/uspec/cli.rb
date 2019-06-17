@@ -56,17 +56,22 @@ class Uspec::CLI
       warn "path not found: #{path}"
     end
   rescue Exception => error
+
+    error_file, error_line, _ = error.backtrace.first.split ?:
+
     message = <<-MSG
-      Uspec encountered an error when loading a test file!
-      This is probably a typo in the test file but if you think this is a bug in Uspec please report it!
-      https://github.com/acook/uspec/issues/new
-      Error may have occured in test file: #{spec || path || error.backtrace.first}
       #{error.class} : #{error.message}
-      #{error.backtrace[0..2].join "\n\t"}
+
+      Uspec encountered an error when loading a test file.
+      This is probably a typo in the test file or the file it is testing.
+
+      If you think this is a bug in Uspec please report it: https://github.com/acook/uspec/issues/new
+
+      Error may have occured in file `#{spec || path || error_file}` on line ##{error_line}.
     MSG
     puts
     warn message
-    ::Uspec::Stats.results << ::Uspec::Result.new(message, error, caller)
+    Uspec::Stats.results << Result.new(message, error, caller)
   end
 
 end
