@@ -29,7 +29,7 @@ module Uspec
       MSG
       puts
       warn message
-      Uspec::Stats.results << Result.new(message, error, caller)
+      Uspec::Stats.results << Uspec::Result.new(message, error, caller)
     end
   end
 end
