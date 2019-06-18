@@ -29,7 +29,7 @@ spec "ensure parent object of BasicObject subclasses get a useful error message"
   actual.include?(expected) || result.inspector
 end
 
-class ::InspectFail; def inspect; raise; end; end
+class ::InspectFail; def inspect; raise RuntimeError, "This error is intentional and part of the test."; end; end
 inspect_fail = InspectFail.new
 
 spec "display a useful error message when a user-defined inspect method fails" do
