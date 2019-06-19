@@ -22,6 +22,8 @@ Gem::Specification.new do |gem|
   # technically should still work in 2.0 but some of the test suite won't pass
   gem.required_ruby_version = ">= 2.1"
 
+  gem.add_dependency "that_object_is_so_basic", "~> 0.0.5"
+
   gem.add_development_dependency "pry"
   gem.add_development_dependency "pry-doc"
 end

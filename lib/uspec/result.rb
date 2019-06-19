@@ -1,4 +1,5 @@
 require_relative "terminal"
+require "toisb"
 
 module Uspec
   class Result
@@ -8,8 +9,9 @@ module Uspec
       @spec = spec
       @raw = raw
       @source = source
+      @handler = ::TOISB.wrap raw
     end
-    attr_reader :spec, :raw, :source
+    attr_reader :spec, :raw, :source, :handler
 
     def pretty
       if raw == true then
@@ -29,7 +31,7 @@ module Uspec
           red('Unknown Result'), vspace,
           hspace, 'Spec did not return a boolean value ', newline,
           hspace, 'in spec at ', source.first, vspace,
-          hspace, red(klassinfo), inspector, newline
+          hspace, red(subklassinfo), inspector, newline
         ].join
       end
     end
@@ -41,18 +43,18 @@ module Uspec
     end
 
     def message
-      "#{red klassinfo}#{raw.message}"
+      "#{red subklassinfo}#{raw.message}"
     end
 
-    def klassinfo
-      superklass ? "#{klass} < #{superklass}: " : "#{klass}: "
+    def subklassinfo
+      "#{handler.subklassinfo}: "
     end
 
     # Attempts to inspect an object
     def inspector
-      klass && klass.public_method_defined?(:inspect) ? raw.inspect : "#<#{klass}:0x#{get_id}>"
+      handler.inspector!
     rescue Exception => error
-      return "#<#{klass}:0x#{get_id}>" if error.message.include? get_id
+      return handler.simple_inspector if error.message.include? handler.get_id
 
       error_file, error_line, _ = error.backtrace[4].split ?:
 
@@ -72,40 +74,6 @@ module Uspec
 
 \t#{error.backtrace.join "\n\t"}
       MSG
-    end
-
-    # Returns the class of the object if it isn't already a class
-    def klass
-      Module === raw ? raw : ancestor_klasses[1]
-    end
-
-    # Returns the superclass of the object
-    def superklass
-      ancestor_klasses[2]
-    end
-
-    # Gets the object ID of an object
-    def get_id
-      raw.__id__.to_s(16) rescue 0
-    end
-
-    # Obtain the singleton class of an object
-    def singleton
-      @singleton ||= (class << raw; self; end) rescue raw.class
-    end
-
-    def ancestor_klasses
-      @ancestor_klasses ||= ancestors.select{|a| a.is_a? Class}
-    end
-
-    # Collects the ancestors of an object
-    def ancestors
-      @ancestors ||= safe_send singleton, :ancestors
-    end
-
-    # Works around BasicObject and other objects that are missing/overwrite important methods
-    def safe_send object, method, *args, &block
-      (Module === object ? Module : Object).instance_method(method).bind(object).call(*args, &block)
     end
 
     def inspect
