@@ -10,6 +10,16 @@ spec 'catches errors' do
   output.include? 'Exception'
 end
 
+spec 'catches even non-StandardError-subclass exceptions' do
+  output = capture do
+    spec 'not implemented error' do
+      raise ::NotImplementedError, 'test exception'
+    end
+  end
+
+  output.include? 'Exception'
+end
+
 spec 'complains when spec block returns non boolean' do
   output = capture do
     spec 'whatever' do

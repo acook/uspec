@@ -12,7 +12,7 @@ module Uspec
 
       begin
         raw_result = yield
-      rescue => raw_result
+      rescue Exception => raw_result
       end
 
       result = Result.new description, raw_result, caller
