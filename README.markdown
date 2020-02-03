@@ -62,12 +62,12 @@ Or install it directly with:
 Quickstart
 ----------
 
-0. Create a `spec` (or `uspec`) directory to keep your specs in.
+0. Create a `uspec` directory to keep your specs in.
 1. Name your specs ending with `_spec.rb`.
 2. Write some specs in Ruby using the `spec` method (example above).
 2. Use the included `uspec` executable to run your specs.
 
-**Hint:** A lot of people also put `require_relative 'spec_helper'` in their tests for shared code between tests.
+**Hint:** A lot of people also put `require_relative 'spec_helper'` at the top of their test files for sharing code between tests.
 
 Commandline Usage
 -----------------
@@ -78,7 +78,7 @@ uspec - minimalistic ruby testing framework
 usage: uspec [<file_or_path>...]
 ```
 
-- Without arguments the `uspec` command will automatially look for `spec` and `uspec` directories and load any `*_spec.rb` files inside them.
+- Without arguments the `uspec` command will automatially look for a `uspec` directory and load any `*_spec.rb` files inside them.
 - You can also pass in arbitrary files and it will attempt to run them as specs.
 - If you pass in directories `uspec` will scan for and run any specs inside them.
 - Uspec will return the number of failures as its status code to the commandline, 0 if none.
@@ -86,7 +86,7 @@ usage: uspec [<file_or_path>...]
 Output
 ------
 
-Wonder what Uspec looks like?
+A brief explanation of `uspec`'s output to show you what it can do!
 
 ### Success
 
@@ -158,7 +158,7 @@ When you run the test Uspec will helpfully display:
 Tips & Tricks
 -------------
 
-Because there's no matchers and only one method there's no reference documentation to look at, so here are some ideas to get you going!
+Because there's no matchers and only one method there's no need for specialized reference documentation, but here are some ideas to get you going!
 
 ### String matching
 
@@ -201,6 +201,11 @@ If there's no error, then Uspec will see the result of the method call (whatever
 If the wrong Exception is raised, then because of reraising (by just calling `raise` without parameters),
 Ruby will dutifully pass along the error for Uspec to display.
 
+Mocks, Spies, Stubs, and More!
+-----------------------
+
+Since `uspec` is a very straight forward testing utility it is easy to use any of the standard Ruby mocking frameworks with it. However, the [Impasta gem](https://github.com/acook/impasta) was made specifically for simple but comprehensive mocking, stubbing, and spying.
+
 Assertions & Debugging
 ----------------------
 
@@ -224,7 +229,8 @@ end
 MyFoo.new.assert
 ```
 
-If there are any specs that fail, your application will exit with an error code equal to the number of failures.
+Assertions will be displayed as they occur, success or failure along with any informative output.
+If there are any specs that fail, when your application exits its error code will equal the number of failures.
 
 ```
 $ ruby foo.rb
@@ -251,4 +257,4 @@ Contributing
 Author
 ------
 
-> Anthony M. Cook 2013-2019
+> Anthony M. Cook 2013-2020
