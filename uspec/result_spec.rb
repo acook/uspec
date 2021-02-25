@@ -60,3 +60,11 @@ spec "display a useful error message when a user-defined inspect method fails" d
   actual =  result.pretty
   actual.include?(expected) || result.inspector
 end
+
+spec "display strings more like their actual contents" do
+  expected = "this string:\nshould display \e[42;2mproperly"
+  result = Uspec::Result.new "Inspect Fail Result", expected, []
+  actual =  result.pretty
+  actual.include?(expected) || result.inspector
+end
+
