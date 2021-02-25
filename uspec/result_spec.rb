@@ -20,6 +20,28 @@ spec "ensure BasicObject subclasses work" do
   actual.include?(expected) || result.pretty
 end
 
+spec "display basic info about Object" do
+  result = Uspec::Result.new "Object Result", Object.new, []
+  expected = "Object < BasicObject"
+  actual =  result.pretty
+  actual.include?(expected) || result.pretty
+end
+
+spec "display basic info about Array" do
+  result = Uspec::Result.new "Array Result", [], []
+  expected = "Array < Object"
+  actual =  result.pretty
+  actual.include?(expected) || result.pretty
+end
+
+spec "display basic info about Array class" do
+  result = Uspec::Result.new "Array Class Result", Array, []
+  #expected = "Class < ???" # TODO: Make classes display nicer in TOISB
+  expected = "#<Class:Object> < #<Class:BasicObject>: \e[0mArray"
+  actual =  result.pretty
+  actual.include?(expected) || result.pretty
+end
+
 parent = [obj]
 
 spec "ensure parent object of BasicObject subclasses get a useful error message" do
