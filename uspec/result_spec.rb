@@ -17,7 +17,7 @@ spec "ensure BasicObject subclasses work" do
   result = Uspec::Result.new "BasicObject Subclass Result", obj, []
   expected = "#<BasicObject/TestObject:"
   actual =  result.pretty
-  actual.include?(expected) || result.inspector
+  actual.include?(expected) || result.pretty
 end
 
 parent = [obj]
