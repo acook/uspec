@@ -11,10 +11,6 @@ module Uspec
       @pending = Array.new
     end
 
-    def exit_code
-      failure.size > 255 ? 255 : failure.size
-    end
-
     def inspect
       <<-INFO
         #{super} Failures: #{exit_code}

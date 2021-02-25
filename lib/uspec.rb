@@ -8,7 +8,10 @@ module Uspec
     exit 2
   end
 
+  # this method used to be how we injected the spec method
   def self.extended object
-    object.extend Uspec::DSL
+    #unless object.respond_to? :spec
+    #  object.extend Uspec::DSL
+    #end
   end
 end

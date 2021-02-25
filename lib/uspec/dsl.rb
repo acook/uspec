@@ -1,8 +1,19 @@
 require_relative "result"
 
 module Uspec
-  module DSL
-    module_function
+  class DSL
+    def initialize cli
+      @__uspec_cli = cli
+    end
+
+    def __uspec_cli
+      @__uspec_cli
+    end
+
+    def __uspec_stats
+      @__uspec_cli.stats
+    end
+
     def spec description
       print ' -- ', description
 
@@ -20,11 +31,11 @@ module Uspec
       end
 
       if result.success?
-        Uspec::CLI.stats.success << result
+        __uspec_stats.success << result
       elsif result.pending?
-        Uspec::CLI.stats.pending << result
+        stats.pending << result
       else
-        Uspec::CLI.stats.failure << result
+        __uspec_stats.failure << result
       end
 
       print ': ', result.pretty, "\n"
@@ -38,7 +49,7 @@ module Uspec
       MSG
       puts
       warn message
-      Uspec::Stats.failure << Uspec::Result.new(message, error, caller)
+      __uspec_stats.failure << Uspec::Result.new(message, error, caller)
     end
   end
 end

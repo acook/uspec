@@ -12,7 +12,7 @@ end
 spec 'runs a path of specs' do
   output = capture do
     path = Pathname.new(__FILE__).parent.parent.join('example_specs').to_s
-    Uspec::CLI.run_specs Array(path)
+    Uspec::CLI.new(Array(path)).run_specs
   end
 
   output.include?('I love passing tests') || output
@@ -21,7 +21,7 @@ end
 spec 'runs an individual spec' do
   output = capture do
     path =  Pathname.new(__FILE__).parent.parent.join('example_specs', 'example_spec.rb').to_s
-    Uspec::CLI.run_specs Array(path)
+    Uspec::CLI.new(Array(path)).run_specs
   end
 
   output.include?('I love passing tests') || output

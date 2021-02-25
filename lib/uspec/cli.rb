@@ -2,38 +2,34 @@ require 'pathname'
 require_relative '../uspec'
 
 class Uspec::CLI
-  class << self
-    def usage
-      warn "uspec v#{::Uspec::VERSION} - minimalistic ruby testing framework"
-      warn "usage: #{File.basename $0} [<file_or_path>...]"
-    end
+  def initialize args
+    usage unless (args & %w[-h --help -? /? -v --version]).empty?
 
-    def setup
-      @stats = Uspec::Stats.new
-    end
+    @paths = args
+    @pwd = Pathname.pwd.freeze
+    @stats = Uspec::Stats.new
+    @dsl = Uspec::DSL.new self
+  end
+  attr :stats, :dsl
 
-    def run_specs paths
-      uspec_cli = self.new paths
-      uspec_cli.run_paths
-    end
-
-    def invoke args
-      usage unless (args & %w[-h --help -? /? -v --version]).empty?
-
-      setup
-      run_specs args
-      puts @stats.summary
-      exit @stats.exit_code
-    end
-
-    def stats
-      @stats
-    end
+  def usage
+    warn "uspec v#{::Uspec::VERSION} - minimalistic ruby testing framework"
+    warn "usage: #{File.basename $0} [<file_or_path>...]"
+    exit 1
   end
 
-  def initialize paths
-    @paths = paths
-    @pwd = Pathname.pwd.freeze
+  def run_specs
+    run_paths
+  end
+
+  def invoke
+    run_specs
+    puts @stats.summary
+    exit exit_code
+  end
+
+  def exit_code
+    [@stats.failure.size, 255].min
   end
 
   def paths
@@ -60,7 +56,7 @@ class Uspec::CLI
       end
     elsif path.exist? then
       puts "#{path.basename path.extname}:"
-      Uspec::DSL.instance_eval(path.read, path.to_s)
+      dsl.instance_eval(path.read, path.to_s)
     else
       warn "path not found: #{path}"
     end

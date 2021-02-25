@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
 require_relative '../lib/uspec/cli'
-Uspec::CLI.invoke ARGV
+Uspec::CLI.new(ARGV).invoke
