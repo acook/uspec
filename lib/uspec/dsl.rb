@@ -14,8 +14,14 @@ module Uspec
       @__uspec_cli.stats
     end
 
-    def spec description
-      print ' -- ', description
+    def __uspec_format
+      @__uspec_cli.format
+    end
+
+    def spec description, tags = []
+      format = __uspec_format
+
+      print format.test_prefix, format.test(description, tags), format.test_suffix
 
       if block_given? then
         begin
@@ -33,23 +39,18 @@ module Uspec
       if result.success?
         __uspec_stats.success << result
       elsif result.pending?
-        stats.pending << result
+        __uspec_stats.pending << result
       else
         __uspec_stats.failure << result
       end
 
-      print ': ', result.pretty, "\n"
+      print format.result_prefix, format.result(result), format.result_suffix
     rescue => error
-      message = <<-MSG
-        #{error.class} : #{error.message}
-
+      message = format.internal_error error, <<-MSG
         Uspec encountered an internal error, please report this bug: https://github.com/acook/uspec/issues/new
-
-\t#{error.backtrace.join "\n\t"}
       MSG
-      puts
-      warn message
-      __uspec_stats.failure << Uspec::Result.new(message, error, caller)
+      warn "\n", message
+      __uspec_stats.special << Uspec::Result.new(message, error, caller, self)
     end
   end
 end

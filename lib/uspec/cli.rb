@@ -1,20 +1,59 @@
 require 'pathname'
+require 'slop'
 require_relative '../uspec'
+require_relative 'default_formatter'
 
 class Uspec::CLI
   def initialize args
-    usage unless (args & %w[-h --help -? /? -v --version]).empty?
+    @slop = Slop::Options.new do |o|
+      o.banner = 'usage: uspec [options] [<paths>...]'
+      o.separator "\t<paths>    a list of files or paths to test"
+      o.separator "\t\t   defaults to: \"#{DEFAULT_SEARCH_DIRS.join " "}\""
+      o.string '-f', '--format', "<format> use a custom formatter"
+      o.on '-v', '--version' do
+        print ?v, Uspec::VERSION, ?\n
+        exit 1
+      end
+      o.on '-h', '--help', "you're looking at it" do
+        usage
+      end
+    end
 
-    @paths = args
+    @args = args
     @pwd = Pathname.pwd.freeze
     @stats = Uspec::Stats.new
     @dsl = Uspec::DSL.new self
   end
   attr :stats, :dsl
 
+  def opts
+    return @opts if @opts
+
+    @opts = Slop::Parser.new(@slop).parse @args
+  rescue Slop::MissingArgument => error
+    warn error.message, nil
+    usage
+  end
+
+  def format
+    return @format if @format
+
+    name = opts['-f'] || "default_formatter"
+    begin
+      require_relative name
+    rescue LoadError
+      require name
+    end
+
+    title = name.gsub(/^(.)|(_.)/) {|e| e[-1].upcase }
+
+    @format = Uspec::Formatter.registry[title].new(self) || raise(ArgumentError, "Formatter not found!")
+  end
+
+  DEFAULT_SEARCH_DIRS = ['spec', 'uspec', 'test']
+
   def usage
-    warn "uspec v#{::Uspec::VERSION} - minimalistic ruby testing framework"
-    warn "usage: #{File.basename $0} [<file_or_path>...]"
+    warn "uspec v#{::Uspec::VERSION} - minimalistic ruby testing framework", nil, @slop
     exit 1
   end
 
@@ -23,18 +62,24 @@ class Uspec::CLI
   end
 
   def invoke
+    print format.pre_suite self
     run_specs
-    puts @stats.summary
+    print format.post_suite(self), format.summary(stats)
     exit exit_code
   end
 
   def exit_code
-    [@stats.failure.size, 255].min
+    [(@stats.failure.size + @stats.special.size), 255].min
   end
 
   def paths
+    return @paths if @paths
+
+    @paths = opts.arguments
+
     if @paths.empty? then
-      ['spec', 'uspec', 'test'].each do |path|
+      @paths = Array.new
+      DEFAULT_SEARCH_DIRS.each do |path|
         @paths << path if Pathname.new(path).directory?
       end
     end
@@ -55,8 +100,9 @@ class Uspec::CLI
         run spec
       end
     elsif path.exist? then
-      puts "#{path.basename path.extname}:"
+      print format.pre_file(path, stats), format.file_prefix, format.file(path), format.file_suffix
       dsl.instance_eval(path.read, path.to_s)
+      print format.post_file(path, stats)
     else
       warn "path not found: #{path}"
     end
@@ -64,9 +110,7 @@ class Uspec::CLI
 
     error_file, error_line, _ = error.backtrace.first.split ?:
 
-    message = <<-MSG
-      #{error.class} : #{error.message}
-
+    message = format.internal_error error, <<-MSG
       Uspec encountered an error when loading a test file.
       This is probably a typo in the test file or the file it is testing.
 
@@ -74,12 +118,9 @@ class Uspec::CLI
 
       Error occured when loading test file `#{spec || path}`.
       The origin of the error may be in file `#{error_file}` on line ##{error_line}.
-
-\t#{error.backtrace[0,3].join "\n\t"}
     MSG
-    puts
-    warn message
-    self.class.stats.failure << Uspec::Result.new(message, error, caller)
+    warn "\n", message
+    stats.special << Uspec::Result.new(message, error, caller, self)
   end
 
 end
