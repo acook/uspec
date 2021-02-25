@@ -8,19 +8,26 @@ class Uspec::CLI
       warn "usage: #{File.basename $0} [<file_or_path>...]"
     end
 
+    def setup
+      @stats = Uspec::Stats.new
+    end
+
     def run_specs paths
       uspec_cli = self.new paths
       uspec_cli.run_paths
     end
 
     def invoke args
-      if (args & %w[-h --help -? /? -v --version]).empty? then
-        run_specs args
-        puts Uspec::Stats.summary
-        exit Uspec::Stats.exit_code
-      else
-        usage
-      end
+      usage unless (args & %w[-h --help -? /? -v --version]).empty?
+
+      setup
+      run_specs args
+      puts @stats.summary
+      exit @stats.exit_code
+    end
+
+    def stats
+      @stats
     end
   end
 
@@ -76,7 +83,7 @@ class Uspec::CLI
     MSG
     puts
     warn message
-    Uspec::Stats.results << Uspec::Result.new(message, error, caller)
+    self.class.stats.failure << Uspec::Result.new(message, error, caller)
   end
 
 end

@@ -18,6 +18,8 @@ module Uspec
         green raw
       elsif raw == false then
         red raw
+      elsif pending? then
+        yellow 'pending'
       elsif Exception === raw then
         [
           red('Exception'), vspace,
@@ -84,6 +86,22 @@ module Uspec
 
 \t#{error.backtrace.join "\n\t"}
       MSG
+    end
+
+    def success?
+      raw == true
+    end
+
+    def failure?
+      raw != true && !@pending
+    end
+
+    def pending?
+      !!@pending
+    end
+
+    def pending!
+      @pending = true
     end
 
     def inspect
