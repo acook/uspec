@@ -55,9 +55,9 @@ module Uspec
     # Attempts to inspect an object
     def inspector
       if String === raw && raw.include?(?\n) then
-        # if object is a multiline string, display it escaped and unescaped
+        # if object is a multiline string, display it unescaped
         [
-          handler.inspector!, vspace,
+          vspace,
           hspace, yellow('"""'), newline,
           raw, normal, newline,
           hspace, yellow('"""')
