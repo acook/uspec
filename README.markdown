@@ -4,7 +4,7 @@ Uspec
 Uspec is a shiny little testing framework for your apps!
 
 [![Gem Version](https://img.shields.io/gem/v/uspec.svg?style=for-the-badge)](https://rubygems.org/gems/uspec/)
-[![Build Status](https://img.shields.io/travis/acook/uspec.svg?style=for-the-badge)](https://travis-ci.org/acook/uspec)
+[![Build Status](https://img.shields.io/circleci/build/github/acook/uspec.svg?style=for-the-badge)](https://app.circleci.com/pipelines/github/acook/uspec)
 [![Code Climate](https://img.shields.io/codeclimate/maintainability/acook/uspec.svg?style=for-the-badge)](https://codeclimate.com/github/acook/uspec)
 
 Philosophy / Why Uspec?
