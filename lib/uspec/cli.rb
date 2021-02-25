@@ -79,7 +79,7 @@ class Uspec::CLI
     MSG
     puts
     warn message
-    self.class.stats.failure << Uspec::Result.new(message, error, caller)
+    stats.failure << Uspec::Result.new(message, error, caller)
   end
 
 end
