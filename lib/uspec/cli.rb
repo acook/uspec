@@ -1,22 +1,36 @@
 require 'pathname'
+require 'slop'
 require_relative '../uspec'
 require_relative 'default_formatter'
 
 class Uspec::CLI
   def initialize args
-    usage unless (args & %w[-h --help -? /? -v --version]).empty?
+    @slop = Slop::Options.new do |o|
+      o.banner = 'usage: uspec [options] [<paths>...]'
+      o.on '-v', '--version' do
+        print ?v, Uspec::VERSION, ?\n
+        exit 1
+      end
+      o.on '-h', '--help', "you're looking at it" do
+        usage
+      end
+      o.separator "\t<paths>    a list of files or paths to test"
+      o.separator "\t\t   defaults to: \"#{DEFAULT_SEARCH_DIRS.join " "}\""
+    end
 
-    @paths = @args = args
+    @opts = Slop::Parser.new(@slop).parse args
     @pwd = Pathname.pwd.freeze
     @stats = Uspec::Stats.new
     @format = Uspec::DefaultFormatter.new self
     @dsl = Uspec::DSL.new self
   end
-  attr :args, :paths, :stats, :dsl, :format
+  attr :opts, :stats, :dsl, :format
+
+  DEFAULT_SEARCH_DIRS = ['spec', 'uspec', 'test']
 
   def usage
     warn "uspec v#{::Uspec::VERSION} - minimalistic ruby testing framework"
-    warn "usage: #{File.basename $0} [<file_or_path>...]"
+    warn @slop
     exit 1
   end
 
@@ -36,8 +50,13 @@ class Uspec::CLI
   end
 
   def paths
+    return @paths if @paths
+
+    @paths = @opts.arguments
+
     if @paths.empty? then
-      ['spec', 'uspec', 'test'].each do |path|
+      @paths = Array.new
+      DEFAULT_SEARCH_DIRS.each do |path|
         @paths << path if Pathname.new(path).directory?
       end
     end
