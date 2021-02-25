@@ -7,6 +7,9 @@ class Uspec::CLI
   def initialize args
     @slop = Slop::Options.new do |o|
       o.banner = 'usage: uspec [options] [<paths>...]'
+      o.separator "\t<paths>    a list of files or paths to test"
+      o.separator "\t\t   defaults to: \"#{DEFAULT_SEARCH_DIRS.join " "}\""
+      o.string '-f', '--format', "<format> use a custom formatter"
       o.on '-v', '--version' do
         print ?v, Uspec::VERSION, ?\n
         exit 1
@@ -14,23 +17,43 @@ class Uspec::CLI
       o.on '-h', '--help', "you're looking at it" do
         usage
       end
-      o.separator "\t<paths>    a list of files or paths to test"
-      o.separator "\t\t   defaults to: \"#{DEFAULT_SEARCH_DIRS.join " "}\""
     end
 
-    @opts = Slop::Parser.new(@slop).parse args
+    @args = args
     @pwd = Pathname.pwd.freeze
     @stats = Uspec::Stats.new
-    @format = Uspec::DefaultFormatter.new self
     @dsl = Uspec::DSL.new self
   end
-  attr :opts, :stats, :dsl, :format
+  attr :stats, :dsl
+
+  def opts
+    return @opts if @opts
+
+    @opts = Slop::Parser.new(@slop).parse @args
+  rescue Slop::MissingArgument => error
+    warn error.message, nil
+    usage
+  end
+
+  def format
+    return @format if @format
+
+    name = opts['-f'] || "default_formatter"
+    begin
+      require_relative name
+    rescue LoadError
+      require name
+    end
+
+    title = name.gsub(/^(.)|(_.)/) {|e| e[-1].upcase }
+
+    @format = Uspec::Formatter.registry[title].new(self) || raise(ArgumentError, "Formatter not found!")
+  end
 
   DEFAULT_SEARCH_DIRS = ['spec', 'uspec', 'test']
 
   def usage
-    warn "uspec v#{::Uspec::VERSION} - minimalistic ruby testing framework"
-    warn @slop
+    warn "uspec v#{::Uspec::VERSION} - minimalistic ruby testing framework", nil, @slop
     exit 1
   end
 
@@ -52,7 +75,7 @@ class Uspec::CLI
   def paths
     return @paths if @paths
 
-    @paths = @opts.arguments
+    @paths = opts.arguments
 
     if @paths.empty? then
       @paths = Array.new

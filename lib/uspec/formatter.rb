@@ -3,6 +3,16 @@ require "toisb"
 module Uspec
   # subclass this to build your own formatter
   class Formatter
+    class << self
+      def inherited(subklass)
+        registry[subklass.name.split("::").last] = subklass
+      end
+
+      def registry
+        @registry ||= Hash.new
+      end
+    end
+
     def initialize options
       @options = options
     end
