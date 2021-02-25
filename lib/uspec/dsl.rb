@@ -1,26 +1,42 @@
 require_relative "result"
 
 module Uspec
-  module DSL
-    module_function
-    def spec description
-      terminal = Uspec::Terminal
+  class DSL
+    def initialize cli
+      @__uspec_cli = cli
+    end
 
+    def __uspec_cli
+      @__uspec_cli
+    end
+
+    def __uspec_stats
+      @__uspec_cli.stats
+    end
+
+    def spec description
       print ' -- ', description
 
-      unless block_given? then
-        Uspec::Stats.pending << description
-        return print(': ' + terminal.yellow('pending') + terminal.newline)
-      end
-
-      begin
-        raw_result = yield
-      rescue Exception => raw_result
+      if block_given? then
+        begin
+          raw_result = yield
+        rescue Exception => raw_result
+        end
       end
 
       result = Result.new description, raw_result, caller
 
-      Uspec::Stats.results << result
+      unless block_given? then
+        result.pending!
+      end
+
+      if result.success?
+        __uspec_stats.success << result
+      elsif result.pending?
+        stats.pending << result
+      else
+        __uspec_stats.failure << result
+      end
 
       print ': ', result.pretty, "\n"
     rescue => error
@@ -33,7 +49,7 @@ module Uspec
       MSG
       puts
       warn message
-      Uspec::Stats.results << Uspec::Result.new(message, error, caller)
+      __uspec_stats.failure << Uspec::Result.new(message, error, caller)
     end
   end
 end

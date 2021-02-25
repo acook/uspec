@@ -8,23 +8,10 @@ module Uspec
     exit 2
   end
 
+  # this method used to be how we injected the spec method
   def self.extended object
-    object.extend Uspec::DSL
+    #unless object.respond_to? :spec
+    #  object.extend Uspec::DSL
+    #end
   end
-end
-
-at_exit do
-  failures = Uspec::Stats.exit_code
-  status = $!.respond_to?(:status) ? $!.status : 0
-  errors = $!.respond_to?(:cause) && $!.cause ? 1 : 0
-  code = [failures, status, errors].max
-  puts [
-    "test summary: ",
-    Uspec::Terminal.green("#{Uspec::Stats.successes} successful"),
-    ", ",
-    Uspec::Terminal.red("#{Uspec::Stats.failures} failed"),
-    ", ",
-    Uspec::Terminal.yellow("#{Uspec::Stats.pending.size} pending")
-  ].join
-  exit code
 end
