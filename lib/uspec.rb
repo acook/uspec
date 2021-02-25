@@ -18,5 +18,13 @@ at_exit do
   status = $!.respond_to?(:status) ? $!.status : 0
   errors = $!.respond_to?(:cause) && $!.cause ? 1 : 0
   code = [failures, status, errors].max
+  puts [
+    "test summary: ",
+    Uspec::Terminal.green("#{Uspec::Stats.successes} successful"),
+    ", ",
+    Uspec::Terminal.red("#{Uspec::Stats.failures} failed"),
+    ", ",
+    Uspec::Terminal.yellow("#{Uspec::Stats.pending.size} pending")
+  ].join
   exit code
 end
