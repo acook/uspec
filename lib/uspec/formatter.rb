@@ -8,12 +8,18 @@ module Uspec
     end
 
     # this is run before a file is executed
-    def suite_pre path, stats
+    def pre_suite options
+      # perhaps show options.paths
+      # or something from options.args
+    end
+
+    # run before the file is loaded
+    def pre_file paths, stats
     end
 
     # gets tacked onto the beginning
     # just a convinience
-    def file
+    def file_prefix
     end
 
     # receives the path of the file being run
@@ -58,7 +64,11 @@ module Uspec
     end
 
     # this is run after a file has completed
-    def suite_post path, stats
+    def post_file path, prefix
+    end
+
+    # this is run after everything else except the summary
+    def post_suite options
     end
 
     # this is displayed at the end after all tests
@@ -72,13 +82,14 @@ module Uspec
     #
     # - exception is the exception object captured by rescue
     # - info is the additional information provided by Uspec
-    # - target is an object which can be inserted
     #
     # you can override this if you want
     def internal_error exception, info
       [
-        exception.class, " : ", exception.message, "\n\n",
-        "\t", info, "\n\n",
+        Uspec::Terminal.esc("3;31;47"), " ",
+        exception.class, " : ", exception.message,
+        " ", Uspec::Terminal.esc("0"), "\e[K\n\n",
+        info, "\n\n",
         "\t", exception.backtrace.join("\n\t"), "\n"
       ].join
     end

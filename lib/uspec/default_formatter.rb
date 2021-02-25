@@ -5,16 +5,6 @@ module Uspec
   class DefaultFormatter < Formatter
     T = Uspec::Terminal
 
-    def pre_suite options
-      @out_of_band_failures = []
-      nil
-    end
-
-    def pre_file path, stats
-      @pre_file_failures = stats.failure.dup
-      nil
-    end
-
     def file_prefix
     end
 
@@ -52,10 +42,12 @@ module Uspec
       when false
         T.red value
       when Exception
+        msg = robj.obj ? robj.desc : "Spec encountered an Exception"
+        loc = robj.obj ? "in " : "in spec at "
         [
           T.red('Exception'), T.vspace,
-          T.hspace, 'Spec encountered an Exception ', T.newline,
-          T.hspace, 'in spec at ', robj.source.first, T.vspace,
+          T.hspace, msg, T.newline,
+          T.hspace, loc, robj.source.first, T.vspace,
           T.hspace, message(robj), T.vspace,
           T.white(trace robj)
         ].join
@@ -73,26 +65,12 @@ module Uspec
       ?\n
     end
 
-    def post_file path, stats
-      out_of_band_failures = (stats.failure - @pre_file_failures).select(&:abnormal?).map do |r|
-        result r
-      end
-      @out_of_band_failures << out_of_band_failures
-      out_of_band_failures.join "\n\n"
-    end
-
-    def post_suite options
-      (options.stats.failure - @out_of_band_failures).select(&:abnormal?).map do |r|
-        result r
-      end.join "\n\n"
-    end
-
     def summary stats
       [
         "test summary: ",
         Uspec::Terminal.green("#{stats.success.size} successful"),
         ", ",
-        Uspec::Terminal.red("#{stats.failure.size} failed"),
+        Uspec::Terminal.red("#{stats.failure.size + stats.special.size} failed"),
         ", ",
         Uspec::Terminal.yellow("#{stats.pending.size} pending"),
         "\n"

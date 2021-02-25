@@ -49,9 +49,8 @@ module Uspec
       message = format.internal_error error, <<-MSG
         Uspec encountered an internal error, please report this bug: https://github.com/acook/uspec/issues/new
       MSG
-      warn
-      warn message
-      __uspec_stats.failure << Uspec::Result.new(message, error, caller)
+      warn "\n", message
+      __uspec_stats.special << Uspec::Result.new(message, error, caller, self)
     end
   end
 end

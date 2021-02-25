@@ -12,7 +12,8 @@ module Uspec
       @obj = obj
       @handler = ::TOISB.wrap raw
     end
-    attr_reader :spec, :raw, :source, :handler
+    attr_reader :spec, :raw, :source, :obj, :handler
+    alias :desc :spec
 
     def success?
       raw == true

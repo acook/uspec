@@ -32,7 +32,7 @@ class Uspec::CLI
   end
 
   def exit_code
-    [@stats.failure.size, 255].min
+    [(@stats.failure.size + @stats.special.size), 255].min
   end
 
   def paths
@@ -77,9 +77,8 @@ class Uspec::CLI
       Error occured when loading test file `#{spec || path}`.
       The origin of the error may be in file `#{error_file}` on line ##{error_line}.
     MSG
-    warn
-    warn message
-    stats.failure << Uspec::Result.new(message, error, caller, self)
+    warn "\n", message
+    stats.special << Uspec::Result.new(message, error, caller, self)
   end
 
 end

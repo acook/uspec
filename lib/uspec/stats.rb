@@ -3,12 +3,13 @@ module Uspec
     def initialize
       clear_results!
     end
-    attr :success, :failure, :pending
+    attr :success, :failure, :pending, :special
 
     def clear_results!
       @success = Array.new
       @failure = Array.new
       @pending = Array.new
+      @special = Array.new
     end
 
     def inspect
