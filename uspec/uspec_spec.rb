@@ -45,6 +45,8 @@ end
 spec 'exit code is the number of failures' do
   expected = 50
   output = capture do
+    Uspec::Stats.clear_results! # because we're forking, we will have a copy of the current results
+
     expected.times do |count|
       spec "fail ##{count + 1}" do
         false
@@ -60,6 +62,8 @@ end
 
 spec 'if more than 255 failures, exit status is 255' do
   capture do
+    Uspec::Stats.clear_results! # because we're forking, we will have a copy of the current results
+
     500.times do
       spec 'fail' do
         false
