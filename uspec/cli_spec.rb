@@ -15,7 +15,7 @@ spec 'runs a path of specs' do
     Uspec::CLI.run_specs Array(path)
   end
 
-  output.include? 'I love passing tests'
+  output.include?('I love passing tests') || output
 end
 
 spec 'runs an individual spec' do
@@ -24,7 +24,7 @@ spec 'runs an individual spec' do
     Uspec::CLI.run_specs Array(path)
   end
 
-  output.include? 'I love passing tests'
+  output.include?('I love passing tests') || output
 end
 
 spec 'broken requires in test files count as test failures' do
