@@ -21,16 +21,5 @@ module Uspec
     def results
       @success + @failure + @pending
     end
-
-    def summary
-      [
-        "test summary: ",
-        Uspec::Terminal.green("#{@success.size} successful"),
-        ", ",
-        Uspec::Terminal.red("#{@failure.size} failed"),
-        ", ",
-        Uspec::Terminal.yellow("#{@pending.size} pending")
-      ].join
-    end
   end
 end

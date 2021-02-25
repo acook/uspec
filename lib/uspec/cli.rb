@@ -1,16 +1,18 @@
 require 'pathname'
 require_relative '../uspec'
+require_relative 'default_formatter'
 
 class Uspec::CLI
   def initialize args
     usage unless (args & %w[-h --help -? /? -v --version]).empty?
 
-    @paths = args
+    @paths = @args = args
     @pwd = Pathname.pwd.freeze
     @stats = Uspec::Stats.new
+    @format = Uspec::DefaultFormatter.new self
     @dsl = Uspec::DSL.new self
   end
-  attr :stats, :dsl
+  attr :args, :paths, :stats, :dsl, :format
 
   def usage
     warn "uspec v#{::Uspec::VERSION} - minimalistic ruby testing framework"
@@ -23,8 +25,10 @@ class Uspec::CLI
   end
 
   def invoke
+    print format.pre_suite self
     run_specs
-    puts @stats.summary
+    print format.post_suite self
+    print format.summary stats
     exit exit_code
   end
 
@@ -55,8 +59,12 @@ class Uspec::CLI
         run spec
       end
     elsif path.exist? then
-      puts "#{path.basename path.extname}:"
+      print format.pre_file path, stats
+      print format.file_prefix
+      print format.file path
+      print format.file_suffix
       dsl.instance_eval(path.read, path.to_s)
+      print format.post_file path, stats
     else
       warn "path not found: #{path}"
     end
@@ -64,9 +72,7 @@ class Uspec::CLI
 
     error_file, error_line, _ = error.backtrace.first.split ?:
 
-    message = <<-MSG
-      #{error.class} : #{error.message}
-
+    message = format.internal_error error, <<-MSG
       Uspec encountered an error when loading a test file.
       This is probably a typo in the test file or the file it is testing.
 
@@ -74,12 +80,10 @@ class Uspec::CLI
 
       Error occured when loading test file `#{spec || path}`.
       The origin of the error may be in file `#{error_file}` on line ##{error_line}.
-
-\t#{error.backtrace[0,3].join "\n\t"}
     MSG
-    puts
+    warn
     warn message
-    self.class.stats.failure << Uspec::Result.new(message, error, caller)
+    stats.failure << Uspec::Result.new(message, error, caller, self)
   end
 
 end
