@@ -24,7 +24,7 @@ This also means *no monkey patching* core classes!
 Uspec's output is in beautiful ansi technicolor,
 with red for failures, green for successes, and yellow for pending specs. Here's a screenshot:
 
-![Screenshot!](http://i.imgur.com/M2F5YvO.png)
+![Screenshot!](https://i.imgur.com/Baqggck.png)
 
 Uspec is tiny, painless, and easy to use. Download it and give it a try!
 
@@ -90,7 +90,7 @@ A brief explanation of `uspec`'s output to show you what it can do!
 
 ### Success
 
-If a spec passes:
+If a spec passes (returns true):
 
 ```
  -- AwesomeMcCoolname.generate creates a cool name: true
@@ -98,7 +98,7 @@ If a spec passes:
 
 ### Failure
 
-If a spec fails:
+If a spec fails (returns false):
 
 ```
  -- AwesomeMcCoolname.generate creates a cool name: false
@@ -106,13 +106,13 @@ If a spec fails:
 
 ### Exception
 
-If the spec throws an error:
+If the spec encounters an error (raises an Exception):
 
 ```
  -- AwesomeMcCoolname.generate creates a cool name: Exception
 
     Encountered an Exception while running spec
-    at uspec/awesome_mc_coolname_spec.rb:3: in `<main>'
+    in spec at uspec/awesome_mc_coolname_spec.rb:3: in `<main>'
 
     RuntimeError < StandardError: 'wtf'
 
@@ -130,13 +130,13 @@ spec 'AwesomeMcCoolname.generate creates a cool name' do
 end
 ```
 
-Then Uspec will let you know:
+Then Uspec will let you know so you can debug it:
 
 ```ruby
- -- AwesomeMcCoolname.generate creates a badass name: Unknown Result
+ -- AwesomeMcCoolname.generate creates a badass name: Failed
 
     Spec did not return a boolean value
-    at uspec/awesome_mc_coolname_spec.rb:6: in `<main>'
+    in spec at uspec/awesome_mc_coolname_spec.rb:6: in `<main>'
 
     Integer < Numeric: 5
 ```
@@ -206,45 +206,6 @@ Mocks, Spies, Stubs, and More!
 
 Since `uspec` is a very straight forward testing utility it is easy to use any of the standard Ruby mocking frameworks with it. However, the [Impasta gem](https://github.com/acook/impasta) was made specifically for simple but comprehensive mocking, stubbing, and spying.
 
-Assertions & Debugging
-----------------------
-
-You can also use `uspec` to track assertions in an application or any object you want. Every spec block you use will be tracked and recorded. It's really no problem at all to do.
-
-You can load Uspec's features directly into a class and use its DSL:
-
-```ruby
-require 'uspec'
-
-class MyFoo
-  extend Uspec::DSL
-
-  def assert
-    spec 'foo is valid' do
-      false
-    end
-  end
-end
-
-MyFoo.new.assert
-```
-
-Assertions will be displayed as they occur, success or failure along with any informative output.
-If there are any specs that fail, when your application exits its error code will equal the number of failures.
-
-```
-$ ruby foo.rb
- -- foo is valid: false
-$ echo $?
-1
-```
-
-Uspec is just Ruby
-------------------
-
-If for some reason you don't want to use the `uspec` command, you can `require 'uspec'` and `extend Uspec::DSL`.
-From there you can just run the file with ruby: `ruby my_test_spec.rb`
-
 Contributing
 ------------
 
@@ -257,4 +218,4 @@ Contributing
 Author
 ------
 
-> Anthony M. Cook 2013-2020
+> Anthony M. Cook 2013-2021
