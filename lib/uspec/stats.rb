@@ -37,6 +37,17 @@ module Uspec
         #{results.map{|r| r.inspect}.join "\n\t" }
         INFO
       end
+
+      def summary
+        [
+          "test summary: ",
+          Uspec::Terminal.green("#{Uspec::Stats.successes} successful"),
+          ", ",
+          Uspec::Terminal.red("#{Uspec::Stats.failures} failed"),
+          ", ",
+          Uspec::Terminal.yellow("#{Uspec::Stats.pending.size} pending")
+        ].join
+      end
     end
   end
 end

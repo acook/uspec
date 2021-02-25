@@ -16,6 +16,8 @@ class Uspec::CLI
     def invoke args
       if (args & %w[-h --help -? /? -v --version]).empty? then
         run_specs args
+        puts Uspec::Stats.summary
+        exit Uspec::Stats.exit_code
       else
         usage
       end
