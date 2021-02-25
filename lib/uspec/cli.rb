@@ -27,8 +27,7 @@ class Uspec::CLI
   def invoke
     print format.pre_suite self
     run_specs
-    print format.post_suite self
-    print format.summary stats
+    print format.post_suite(self), format.summary(stats)
     exit exit_code
   end
 
@@ -59,12 +58,9 @@ class Uspec::CLI
         run spec
       end
     elsif path.exist? then
-      print format.pre_file path, stats
-      print format.file_prefix
-      print format.file path
-      print format.file_suffix
+      print format.pre_file(path, stats), format.file_prefix, format.file(path), format.file_suffix
       dsl.instance_eval(path.read, path.to_s)
-      print format.post_file path, stats
+      print format.post_file(path, stats)
     else
       warn "path not found: #{path}"
     end
