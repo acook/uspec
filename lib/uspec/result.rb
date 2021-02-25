@@ -28,7 +28,7 @@ module Uspec
         ].join
       else
         [
-          red('Unknown Result'), vspace,
+          red('Failed'), vspace,
           hspace, 'Spec did not return a boolean value ', newline,
           hspace, 'in spec at ', source.first, vspace,
           hspace, red(subklassinfo), inspector, newline

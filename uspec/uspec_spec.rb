@@ -27,7 +27,7 @@ spec 'complains when spec block returns non boolean' do
     end
   end
 
-  output.include? 'Unknown Result'
+  output.include? 'Failed'
 end
 
 spec 'marks test as pending when no block supplied' do
