@@ -22,7 +22,7 @@ end
 
 spec "display basic info about Object" do
   result = Uspec::Result.new "Object Result", Object.new, []
-  expected = "Object < BasicObject"
+  expected = "Object < BasicObject: \e[0m#<Object:"
   actual =  result.pretty
   actual.include?(expected) || result.pretty
 end
