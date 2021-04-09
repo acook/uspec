@@ -4,8 +4,6 @@ orbs:
 
 jobs:
   build:
-    docker:
-      - image: circleci/ruby:2.6.3-stretch-node
     executor: ruby/default
     steps:
       - checkout
@@ -13,9 +11,6 @@ jobs:
           name: Which bundler?
           command: bundle -v
       - ruby/bundle-install
-  test:
-    executor: ruby/default
-    steps:
       - run:
           name: Uspec tests
           command: bundle exec uspec
