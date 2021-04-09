@@ -13,7 +13,7 @@ end
 class ::TestObject < BasicObject; end
 obj = TestObject.new
 
-spec "ensure BasicObject subclasses work" do
+spec "ensure BasicObject subclass instances work" do
   result = Uspec::Result.new "BasicObject Subclass Result", obj, []
   expected = "#<BasicObject/TestObject:"
   actual =  result.pretty
