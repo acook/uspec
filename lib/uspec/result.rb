@@ -33,7 +33,7 @@ module Uspec
           red('Failed'), vspace,
           hspace, 'Spec did not return a boolean value ', newline,
           hspace, 'in spec at ', source.first, vspace,
-          hspace, red(subklassinfo), inspector, newline
+          hspace, red(subklassinfo), inspector, (Class === raw ? ' Class' : ''), newline
         ].join
       end
     end
