@@ -1,5 +1,4 @@
 require_relative 'uspec_helper'
-require 'open3'
 
 spec 'shows usage' do
   output = capture do
