@@ -33,7 +33,7 @@ module Uspec
       if result.success?
         __uspec_stats.success << result
       elsif result.pending?
-        stats.pending << result
+        __uspec_stats.pending << result
       else
         __uspec_stats.failure << result
       end
