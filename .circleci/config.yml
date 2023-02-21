@@ -1,16 +1,23 @@
 version: 2.1
 orbs:
-  ruby: circleci/ruby@0.1.2 
+  ruby: circleci/ruby@2.0.0
 
 jobs:
   build:
-    executor: ruby/default
+    docker:
+      - image: cimg/ruby:3.1.2
+
+    working_directory: ~/repo
+
     steps:
       - checkout
       - run:
-          name: Which bundler?
-          command: bundle -v
-      - ruby/bundle-install
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+      # run tests!
       - run:
-          name: Uspec tests
-          command: bundle exec uspec
+          name: run tests
+          command:
+            bundle exec uspec
