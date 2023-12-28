@@ -14,19 +14,36 @@ module Uspec
       @__uspec_cli.stats
     end
 
-    def spec description
+    def __uspec_eval block
+      asm = RubyVM::InstructionSequence.disasm(block)
+
+      if asm =~ /^\d+ throw +1$/ then
+        raise LocalJumpError, "Invalid return in spec block."
+      elsif asm =~ /^\d+ throw +2$/ then
+        raise LocalJumpError, "Invalid break in spec block."
+      else
+        block.call
+      end
+    end
+
+    def spec description, &block
+      state = 0
       print ' -- ', description
 
-      if block_given? then
+      if block then
         begin
-          raw_result = yield
+          state = 1
+          raw_result = __uspec_eval block
+          state = 3
         rescue Exception => raw_result
+          state = 4
         end
       end
 
       result = Result.new description, raw_result, caller
 
-      unless block_given? then
+      unless block then
+        state = 5
         result.pending!
       end
 
@@ -40,6 +57,7 @@ module Uspec
 
       print ': ', result.pretty, "\n"
     rescue => error
+      state = 6
       message = <<-MSG
         #{error.class} : #{error.message}
 
@@ -50,6 +68,8 @@ module Uspec
       puts
       warn message
       __uspec_stats.failure << Uspec::Result.new(message, error, caller)
+    ensure
+      return [state, error, result, raw_result]
     end
   end
 end

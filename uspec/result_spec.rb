@@ -66,4 +66,3 @@ spec "display strings more like their actual contents" do
   actual =  result.pretty
   actual.include?(expected) || result.inspector
 end
-

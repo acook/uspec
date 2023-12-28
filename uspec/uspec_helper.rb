@@ -1,3 +1,5 @@
+require 'pry'
+
 require_relative '../lib/uspec'
 extend Uspec
 
@@ -17,4 +19,3 @@ def capture
 
   output
 end
-
