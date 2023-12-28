@@ -7,7 +7,7 @@ spec 'when return used in spec, capture it as an error' do
     exec "bin/uspec #{path}"
   end
 
-  output.include?('Invalid return') || output.split("\n").unshift("\t>\t").join("\n\t>\t")
+  output.include?('Invalid return') || output
 end
 
 spec 'when break used in spec, capture it as an error' do
@@ -17,5 +17,5 @@ spec 'when break used in spec, capture it as an error' do
     exec "bin/uspec #{path}"
   end
 
-  output.include?('Invalid break') || output.split("\n").unshift("\t>\t").join("\n\t>\t")
+  output.include?('Invalid break') || output
 end
