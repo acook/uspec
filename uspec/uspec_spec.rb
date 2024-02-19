@@ -61,7 +61,7 @@ spec 'exit code is the number of failures' do
 end
 
 spec 'when more than 255 failures, exit status is 255' do
-  capture do
+  output = capture do
     __uspec_stats.clear_results! # because we're forking, we will have a copy of the current results
 
     500.times do
@@ -73,5 +73,5 @@ spec 'when more than 255 failures, exit status is 255' do
     exit __uspec_cli.exit_code
   end
 
-  $?.exitstatus == 255 || $?
+  $?.exitstatus == 255 || [$?, output]
 end
