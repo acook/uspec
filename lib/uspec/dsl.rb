@@ -2,6 +2,10 @@ require_relative "result"
 
 module Uspec
   class DSL
+    USPEC_CLI_BLOCK = -> { @__uspec_dsl.__uspec_cli }
+    USPEC_STAT_BLOCK = -> { @__uspec_dsl.__uspec_cli.stats }
+    USPEC_SPEC_BLOCK = ->(description, &block) { @__uspec_dsl.spec description, &block }
+
     def initialize cli
       @__uspec_cli = cli
     end
@@ -23,7 +27,16 @@ module Uspec
         raise LocalJumpError, "Invalid break in spec block."
       else
         block.call
-      end
+      end if false
+
+      o = Object.new
+      o.define_singleton_method :__uspec_stats, USPEC_STAT_BLOCK
+      o.define_singleton_method :__uspec_cli, USPEC_CLI_BLOCK
+      o.instance_variable_set :@__uspec_cli, @__uspec_cli
+      o.instance_variable_set :@__uspec_dsl, self
+      o.define_singleton_method :spec, USPEC_SPEC_BLOCK
+      o.define_singleton_method :spec_block, &block
+      o.spec_block
     end
 
     def spec description, &block
