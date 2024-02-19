@@ -19,16 +19,6 @@ module Uspec
     end
 
     def __uspec_eval block
-      asm = RubyVM::InstructionSequence.disasm(block)
-
-      if asm =~ /^\d+ throw +1$/ then
-        raise LocalJumpError, "Invalid return in spec block."
-      elsif asm =~ /^\d+ throw +2$/ then
-        raise LocalJumpError, "Invalid break in spec block."
-      else
-        block.call
-      end if false
-
       o = Object.new
       o.define_singleton_method :__uspec_stats, USPEC_STAT_BLOCK
       o.define_singleton_method :__uspec_cli, USPEC_CLI_BLOCK
