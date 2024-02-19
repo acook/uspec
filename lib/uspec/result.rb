@@ -5,6 +5,8 @@ module Uspec
   class Result
     include Terminal
 
+    PREFIX = "#{Terminal.newline}#{Terminal.yellow}>\t#{Terminal.normal}"
+
     def initialize spec, raw, source
       @spec = spec
       @raw = raw
@@ -56,11 +58,9 @@ module Uspec
     def inspector
       if String === raw && raw.include?(?\n) then
         # if object is a multiline string, display it unescaped
+
         [
-          vspace,
-          hspace, yellow('"""'), newline,
-          raw, normal, newline,
-          hspace, yellow('"""')
+          raw.split(newline).unshift(newline).join(PREFIX), normal, newline,
         ].join
       else
         handler.inspector!
