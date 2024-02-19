@@ -5,6 +5,7 @@ module Uspec
     USPEC_CLI_BLOCK = -> { @__uspec_dsl.__uspec_cli }
     USPEC_STAT_BLOCK = -> { @__uspec_dsl.__uspec_cli.stats }
     USPEC_SPEC_BLOCK = ->(description, &block) { @__uspec_dsl.spec description, &block }
+    USPEC_MM_BLOCK = ->(name, *args) { @__uspec_dsl.methods(false).include?(name) && @__uspec_dsl.send(name, *args) || super }
 
     def initialize cli
       @__uspec_cli = cli
@@ -26,6 +27,10 @@ module Uspec
       o.instance_variable_set :@__uspec_dsl, self
       o.define_singleton_method :spec, USPEC_SPEC_BLOCK
       o.define_singleton_method :spec_block, &block
+      o.define_singleton_method :method_missing, USPEC_MM_BLOCK
+      self.instance_variables.each do |name|
+        o.instance_variable_set(name, self.instance_variable_get(name)) unless name.to_s.include? '@__uspec'
+      end
       o.spec_block
     end
 
