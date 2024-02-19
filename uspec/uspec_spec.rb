@@ -7,7 +7,7 @@ spec 'catches errors' do
     end
   end
 
-  output.include? 'Exception'
+  output.include?('Exception') || output
 end
 
 spec 'catches even non-StandardError-subclass exceptions' do
@@ -17,7 +17,7 @@ spec 'catches even non-StandardError-subclass exceptions' do
     end
   end
 
-  output.include? 'Exception'
+  output.include?('Exception') || output
 end
 
 spec 'complains when spec block returns non boolean' do
@@ -27,7 +27,7 @@ spec 'complains when spec block returns non boolean' do
     end
   end
 
-  output.include? 'Failed'
+  output.include?('Failed') || output
 end
 
 spec 'marks test as pending when no block supplied' do
@@ -35,7 +35,7 @@ spec 'marks test as pending when no block supplied' do
     spec 'pending test'
   end
 
-  output.include? 'pending'
+  output.include?('pending') || output
 end
 
 spec 'should not define DSL methods on arbitrary objects' do
@@ -57,7 +57,7 @@ spec 'exit code is the number of failures' do
   end
   actual = $?.exitstatus
 
-  actual == expected || puts("", output) || $?
+  actual == expected || output
 end
 
 spec 'when more than 255 failures, exit status is 255' do

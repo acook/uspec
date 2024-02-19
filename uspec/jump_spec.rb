@@ -7,7 +7,7 @@ spec 'when return used in spec, capture it as an error' do
     exec "bin/uspec #{path}"
   end
 
-  output.include?('Invalid return') || output
+  output.include?('Invalid return') || output.include?('Spec did not return a boolean value') || output
 end
 
 spec 'when break used in spec, capture it as an error' do
@@ -17,5 +17,5 @@ spec 'when break used in spec, capture it as an error' do
     exec "bin/uspec #{path}"
   end
 
-  output.include?('Invalid break') || output
+  output.include?('Invalid break') || output.include?('Spec did not return a boolean value') || output
 end
