@@ -47,16 +47,16 @@ module Uspec
         begin
           state = 1
           raw_result = __uspec_eval block
-          state = 3
+          state = 2
         rescue Exception => raw_result
-          state = 4
+          state = 3
         end
       end
 
       result = Result.new description, raw_result, caller
 
       unless block then
-        state = 5
+        state = 4
         result.pending!
       end
 
@@ -70,7 +70,7 @@ module Uspec
 
       print ': ', result.pretty, "\n"
     rescue => error
-      state = 6
+      state = 5
       message = <<-MSG
         #{error.class} : #{error.message}
 
