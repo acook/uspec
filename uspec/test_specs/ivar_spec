@@ -1,0 +1,5 @@
+@an_instance_variable = true
+
+spec "method spec" do
+  @an_instance_variable
+end

@@ -1,0 +1,7 @@
+def a_method
+  true
+end
+
+spec "method spec" do
+  a_method
+end
