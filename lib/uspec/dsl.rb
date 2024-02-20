@@ -23,7 +23,7 @@ module Uspec
       if block then
         begin
           state = 1
-          raw_result = ::Uspec::Spec.new(self,&block).spec_block
+          raw_result = ::Uspec::Spec.new(self,&block).__uspec_block
           state = 2
         rescue Exception => raw_result
           state = 3

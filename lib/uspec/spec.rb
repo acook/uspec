@@ -17,7 +17,7 @@ module Uspec
         end unless name.to_s.include? '__uspec'
       end
 
-      self.define_singleton_method :spec_block, &block
+      self.define_singleton_method :__uspec_block, &block
     end
 
     def spec description, &block
