@@ -74,7 +74,7 @@ class Uspec::CLI
       end
     elsif path.exist? then
       puts "#{path.basename path.extname}:"
-      dsl.instance_eval(path.read, path.to_s)
+      Uspec::Spec.new(dsl, self).instance_eval(path.read, path.to_s)
     else
       warn "path not found: #{path}"
     end
