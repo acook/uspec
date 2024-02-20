@@ -3,8 +3,8 @@ require_relative "result"
 module Uspec
   class Spec
 
-    def initialize dsl, &block
-
+    def initialize dsl, description, &block
+      @__uspec_description = description
       @__uspec_dsl = dsl
 
       dsl.instance_variables.each do |name|
@@ -17,7 +17,13 @@ module Uspec
         end unless name.to_s.include? '__uspec'
       end
 
+      if block then
       self.define_singleton_method :__uspec_block, &block
+      else
+        self.define_singleton_method :__uspec_block do
+          raise "Uspec: No block provided for `#{@__uspec_description}`"
+        end
+      end
     end
 
     def spec description, &block
