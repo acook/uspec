@@ -10,8 +10,13 @@ module Uspec
 
   # this method used to be how we injected the spec method
   def self.extended object
-    #unless object.respond_to? :spec
-    #  object.extend Uspec::DSL
-    #end
+    unless object.is_a? ::Uspec::DSL
+      if object.respond_to? :spec
+        warn <<-MSG
+          Uspec: overwriting a local `spec` method on #{object.class} due to `extend`!
+        MSG
+      end
+      object.extend Uspec::DSL
+    end
   end
 end

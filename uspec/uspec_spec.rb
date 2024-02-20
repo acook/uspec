@@ -75,3 +75,23 @@ spec 'when more than 255 failures, exit status is 255' do
 
   $?.exitstatus == 255 || [$?, output]
 end
+
+spec 'extending with Uspec when already in a DSL does nothing' do
+  path =  Pathname.new(__FILE__).parent.join('test_specs', 'extend_spec')
+
+  output = capture do
+    exec "bin/uspec #{path}"
+  end
+
+  output.include?('[]') && output.include?('1 failed') || output
+end
+
+spec 'extending with Uspec in an arbitrary object makes the DSL available to it' do
+  path =  Pathname.new(__FILE__).parent.join('test_specs', 'extend_spec')
+
+  output = capture do
+    exec "ruby #{path}"
+  end
+
+  output.include?('[:spec]') && output.include?('1 failed') || output
+end

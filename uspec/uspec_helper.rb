@@ -1,7 +1,7 @@
 require 'pry'
 
 require_relative '../lib/uspec'
-extend Uspec
+#extend Uspec
 
 def capture
   readme, writeme = IO.pipe

@@ -1,0 +1,11 @@
+require_relative '../../lib/uspec'
+
+m1 = self.methods
+
+extend Uspec
+
+m2 = self.methods
+
+spec "new methods" do
+  m2 - m1
+end
