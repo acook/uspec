@@ -31,11 +31,13 @@ spec 'complains when spec block returns non boolean' do
 end
 
 spec 'marks test as pending when no block supplied' do
+  path =  Pathname.new(__FILE__).parent.join('test_specs', 'pending_spec')
+
   output = capture do
-    spec 'pending test'
+    exec "bin/uspec #{path}"
   end
 
-  output.include?('pending') || output
+  output.include?('1 pending') || output
 end
 
 spec 'should not define DSL methods on arbitrary objects' do

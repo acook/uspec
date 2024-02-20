@@ -8,8 +8,6 @@ spec 'shows usage' do
   output.include? 'usage'
 end
 
-spec 'pending test doesn\'t crash'
-
 spec 'runs a path of specs' do
   output = capture do
     path = Pathname.new(__FILE__).parent.parent.join('example_specs').to_s
