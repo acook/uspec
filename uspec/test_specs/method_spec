@@ -1,7 +1,10 @@
 def format
+  yield
   true
 end
 
 spec "method spec" do
-  format
+  format do
+    false
+  end
 end

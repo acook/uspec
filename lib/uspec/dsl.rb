@@ -30,8 +30,8 @@ module Uspec
         o.instance_variable_set(name, self.instance_variable_get(name)) unless name.to_s.include? '@__uspec'
       end
       self.methods(false).each do |name|
-        o.define_singleton_method name do |*args|
-          @__uspec_dsl.send name, *args
+        o.define_singleton_method name do |*args, &block|
+          @__uspec_dsl.send name, *args, &block
         end unless name.to_s.include? '__uspec'
       end
       o.spec_block
