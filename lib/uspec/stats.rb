@@ -13,7 +13,7 @@ module Uspec
 
     def inspect
       <<-INFO
-        #{super} Failures: #{exit_code}
+        #{super} Failures: #{@failure.size}
         #{results.map{|r| r.inspect}.join "\n\t" }
       INFO
     end
