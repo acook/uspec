@@ -11,13 +11,6 @@ module Uspec
       @pending = Array.new
     end
 
-    def inspect
-      <<-INFO
-        #{super} Failures: #{@failure.size}
-        #{results.map{|r| r.inspect}.join "\n\t" }
-      INFO
-    end
-
     def results
       @success + @failure + @pending
     end
