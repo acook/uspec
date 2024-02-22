@@ -6,22 +6,21 @@ THISDIR="$(realpath "$(dirname "$0")")"
 ROOTDIR="$(realpath "$THISDIR/../..")"
 
 path="$1"
-name="$(basename "$path")"
 
 if ! [ -f "$path" ]; then
   echo "file not found: $path"
   exit 255
 fi
 
-mkdir -v -p tmp
 if command_exists bundle; then
-  bundle exec "$ROOTDIR/bin/uspec" "$path" > "tmp/$name.output" 2>&1 &
+  echo running with bundler
+  bundle exec "$ROOTDIR/bin/uspec" "$path" 2>&1 &
+  pid="$!"
 else
-  "$ROOTDIR/bin/uspec" "$path" > "tmp/$name.output" 2>&1 &
+  echo running directly
+  "$ROOTDIR/bin/uspec" "$path" 2>&1 &
+  pid="$!"
 fi
 
-pid=$!
 sleep 1
-kill $pid
-cat "tmp/$name.output"
-rm -v "tmp/$name.output"
+kill "$pid"
