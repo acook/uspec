@@ -22,6 +22,6 @@ fi
 
 pid=$!
 sleep 1
-kill --verbose $pid
+kill $pid
 cat "tmp/$name.output"
 rm -v "tmp/$name.output"
