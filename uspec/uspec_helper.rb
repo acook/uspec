@@ -1,4 +1,8 @@
-require 'pry' rescue LoadError
+begin
+  require 'pry'
+rescue LoadError => err
+  nil
+end
 require 'open3'
 
 require_relative '../lib/uspec'
