@@ -33,8 +33,14 @@ class Uspec::CLI
 
   def handle_interrupt! type = Interrupt
     if SignalException === type || SystemExit === type then
-      err = type === Module ? type : type.class
-      puts "Uspec received #{err}! Exiting!"
+      if type === Module then
+        err = type
+        msg = "signal"
+      else
+        err = type.class
+        msg = type.message
+      end
+      puts "Uspec received #{err} #{msg} - exiting!"
       die!
     end
   end
