@@ -1,4 +1,4 @@
-require 'pry'
+require 'pry' rescue LoadError
 require 'open3'
 
 require_relative '../lib/uspec'
