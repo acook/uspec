@@ -46,8 +46,6 @@ module Uspec
       end
 
       print ': ', result.pretty, "\n"
-
-      __uspec_cli.handle_interrupt! result.raw
     rescue => error
       state = 5
       message = <<-MSG
@@ -61,6 +59,7 @@ module Uspec
       warn message
       __uspec_stats.failure << Uspec::Result.new(message, error, caller)
     ensure
+      __uspec_cli.handle_interrupt! result.raw
       return [state, error, result, raw_result]
     end
   end

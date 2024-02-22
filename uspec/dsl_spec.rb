@@ -33,9 +33,10 @@ spec 'Uspec exits when sent a termination signal' do
     nil
   end
 
-  match = output.match(/0.*successful.*,.*1.*failed.*,.*0.*pending/)
+  summary_match = output.match(/0.*successful.*,.*1.*failed.*,.*0.*pending/)
+  no_copy_match = output.match(/2.{0,5}pending/) # previous versions continued after "exiting"
 
-  !!match || output
+  (!!summary_match && !no_copy_match) || output
 end
 
 spec 'complains when spec block returns non boolean' do
