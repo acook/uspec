@@ -46,6 +46,8 @@ module Uspec
       end
 
       print ': ', result.pretty, "\n"
+
+      __uspec_cli.handle_interrupt! result.raw
     rescue => error
       state = 5
       message = <<-MSG

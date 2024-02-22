@@ -20,6 +20,19 @@ spec 'catches even non-StandardError-subclass exceptions' do
   output.include?('Exception') || output
 end
 
+spec 'Uspec exits when sent a termination signal' do
+  path =  Pathname.new(__FILE__).parent.join('test_specs', 'kill_this_spec')
+
+  stdin, allout, thread = Open3.popen2e "uspec/test_specs/kill_this_script.sh \"#{path}\""
+  stdin.close
+  output = allout.read
+  Process.waitpid(thread.pid) rescue Errno::ECHILD
+
+  match = output.match(/0.*successful.*,.*1.*failed.*,.*0.*pending/)
+
+  !!match || output
+end
+
 spec 'complains when spec block returns non boolean' do
   output = capture do
     spec 'whatever' do

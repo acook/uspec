@@ -24,12 +24,24 @@ class Uspec::CLI
 
   def invoke
     run_specs
-    puts @stats.summary
-    exit exit_code
+    die!
   end
 
   def exit_code
     [@stats.failure.size, 255].min
+  end
+
+  def handle_interrupt! type = Interrupt
+    if SignalException === type || SystemExit === type then
+      err = type === Module ? type : type.class
+      puts "Uspec received #{err}! Exiting!"
+      die!
+    end
+  end
+
+  def die!
+    puts @stats.summary
+    exit exit_code
   end
 
   def paths
@@ -62,6 +74,10 @@ class Uspec::CLI
     end
   rescue Exception => error
 
+    if SignalException === error || SystemExit === error then
+      exit 3
+    end
+
     error_file, error_line, _ = error.backtrace.first.split ?:
 
     message = <<-MSG
@@ -80,6 +96,8 @@ class Uspec::CLI
     puts
     warn message
     stats.failure << Uspec::Result.new(message, error, caller)
+
+    dsl.__uspec_cli.handle_interrupt! error
   end
 
 end

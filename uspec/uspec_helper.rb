@@ -1,4 +1,5 @@
 require 'pry'
+require 'open3'
 
 require_relative '../lib/uspec'
 extend Uspec
