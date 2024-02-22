@@ -26,7 +26,12 @@ spec 'Uspec exits when sent a termination signal' do
   stdin, allout, thread = Open3.popen2e "uspec/test_specs/kill_this_script.sh \"#{path}\""
   stdin.close
   output = allout.read
-  Process.waitpid(thread.pid) rescue Errno::ECHILD
+
+  begin
+    Process.waitpid(thread.pid)
+  rescue Errno::ECHILD
+    nil
+  end
 
   match = output.match(/0.*successful.*,.*1.*failed.*,.*0.*pending/)
 
