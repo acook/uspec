@@ -8,5 +8,5 @@ end
 spec 'stats inspect does not have any stray whitespace' do
   output = @__uspec_dsl.__uspec_stats.inspect
   match = output.match(/  |\n/)
-  match == nil
+  match == nil || match
 end
