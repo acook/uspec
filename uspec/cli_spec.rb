@@ -8,10 +8,30 @@ spec 'shows usage' do
   output.include? 'usage'
 end
 
+
+def root
+  Pathname.new(__FILE__).parent.parent
+end
+
+def examples
+  root.join('example_specs')
+end
+
+def specs
+  root.join('uspec')
+end
+
+def tests
+  specs.join('test_specs')
+end
+
+def run_specs path
+  Uspec::CLI.new(Array(path)).run_specs
+end
+
 spec 'runs a path of specs' do
   output = capture do
-    path = Pathname.new(__FILE__).parent.parent.join('example_specs').to_s
-    Uspec::CLI.new(Array(path)).run_specs
+    run_specs examples.to_s
   end
 
   output.include?('I love passing tests') || output
@@ -19,29 +39,20 @@ end
 
 spec 'runs an individual spec' do
   output = capture do
-    path =  Pathname.new(__FILE__).parent.parent.join('example_specs', 'example_spec.rb').to_s
-    Uspec::CLI.new(Array(path)).run_specs
+    run_specs examples.join('example_spec.rb').to_s
   end
 
   output.include?('I love passing tests') || output
 end
 
 spec 'broken requires in test files count as test failures' do
-  path =  Pathname.new(__FILE__).parent.join('test_specs', 'broken_require_spec')
+  output, status = Open3.capture2e "bin/uspec #{tests.join('broken_require_spec')}"
 
-  output = capture do
-    exec "bin/uspec #{path}"
-  end
-
-  $?.exitstatus == 1 || $?
+  status.exitstatus == 1 || status
 end
 
 spec 'displays information about test file with broken require' do
-  path =  Pathname.new(__FILE__).parent.join('test_specs', 'broken_require_spec')
-
-  output = capture do
-    exec "bin/uspec #{path}"
-  end
+  output, status = Open3.capture2e "bin/uspec #{tests.join('broken_require_spec')}"
 
   output.include?('cannot load such file') || output
 end
