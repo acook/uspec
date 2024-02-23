@@ -4,20 +4,24 @@ def root
   Pathname.new(__FILE__).parent.parent
 end
 
-def examples
+def exdir
   root.join('example_specs')
 end
 
-def specs
+def specdir
   root.join('uspec')
 end
 
-def tests
-  specs.join('test_specs')
+def testdir
+  specdir.join('test_specs')
+end
+
+def new_cli path  = '.'
+  Uspec::CLI.new(Array(path))
 end
 
 def run_specs path
-  Uspec::CLI.new(Array(path)).run_specs
+  new_cli(path).run_specs
 end
 
 
@@ -30,36 +34,36 @@ spec 'shows usage' do
 end
 
 spec 'runs a path of specs' do
-  output = capture do
-    run_specs examples.to_s
+  output = outstr do
+    run_specs exdir.to_s
   end
 
   output.include?('I love passing tests') || output
 end
 
 spec 'runs an individual spec' do
-  output = capture do
-    run_specs examples.join('example_spec.rb').to_s
+  output = outstr do
+    run_specs exdir.join('example_spec.rb').to_s
   end
 
   output.include?('I love passing tests') || output
 end
 
 spec 'broken requires in test files count as test failures' do
-  output, status = Open3.capture2e "bin/uspec #{tests.join('broken_require_spec')}"
+  output, status = Open3.capture2e "#{root}/bin/uspec #{testdir.join('broken_require_spec')}"
 
   status.exitstatus == 1 || status
 end
 
 spec 'displays information about test file with broken require' do
-  output, status = Open3.capture2e "bin/uspec #{tests.join('broken_require_spec')}"
+  output, status = Open3.capture2e "#{root}/bin/uspec #{testdir.join('broken_require_spec')}"
 
   output.include?('cannot load such file') || output
 end
 
 spec 'exit code is the number of failures' do
   expected = 50
-  cli = Uspec::CLI.new(Array(path))
+  cli = new_cli
 
   outstr do
     expected.times do |count|
@@ -75,7 +79,7 @@ end
 
 spec 'when more than 255 failures, exit status is 255' do
   expected = 255
-  cli = Uspec::CLI.new(Array(path))
+  cli = new_cli
 
   output = outstr do
     500.times do
