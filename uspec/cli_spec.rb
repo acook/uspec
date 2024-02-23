@@ -59,34 +59,34 @@ end
 
 spec 'exit code is the number of failures' do
   expected = 50
-  output = capture do
-    @__uspec_harness.stats.clear_results! # because we're forking, we will have a copy of the current results
+  cli = Uspec::CLI.new(Array(path))
 
+  outstr do
     expected.times do |count|
-      spec "fail ##{count + 1}" do
+      cli.harness.define.spec "fail ##{count + 1}" do
         false
       end
     end
-
-    exit @__uspec_harness.cli.exit_code
   end
-  actual = $?.exitstatus
+
+  actual = cli.exit_code
 
   actual == expected || output
 end
 
 spec 'when more than 255 failures, exit status is 255' do
-  output = capture do
-    @__uspec_harness.stats.clear_results! # because we're forking, we will have a copy of the current results
+  expected = 255
+  cli = Uspec::CLI.new(Array(path))
 
+  output = outstr do
     500.times do
-      spec 'fail' do
+      cli.harness.define.spec 'fail' do
         false
       end
     end
-
-    exit @__uspec_harness.cli.exit_code
   end
 
-  $?.exitstatus == 255 || [$?, output]
+  actual = cli.exit_code
+
+  actual == expected || [$?, output]
 end

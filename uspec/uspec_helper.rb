@@ -24,3 +24,13 @@ def capture
 
   output
 end
+
+def outstr
+  strio = StringIO.new
+  old_stdout = $stdout
+  $stdout = strio
+
+  yield
+ensure
+  $stdout = old_stdout
+end
