@@ -26,11 +26,19 @@ def capture
 end
 
 def outstr
-  strio = StringIO.new
   old_stdout = $stdout
-  $stdout = strio
+  old_stderr = $stderr
 
-  yield
+  outio = StringIO.new
+  $stdout = outio
+
+  errio = StringIO.new
+  $stderr = errio
+
+  val = yield
+
+  outio.string + errio.string
 ensure
   $stdout = old_stdout
+  $stderr = old_stderr
 end
