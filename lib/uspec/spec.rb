@@ -7,18 +7,18 @@ module Uspec
       @__uspec_description = description
       @__uspec_dsl = dsl
 
-      dsl.instance_variables.each do |name|
-        self.instance_variable_set(name, @__uspec_dsl.instance_variable_get(name)) unless name.to_s.include? '@__uspec'
+      dsl.define.instance_variables.each do |name|
+        self.instance_variable_set(name, @__uspec_dsl.define.instance_variable_get(name)) unless name.to_s.include? '@__uspec'
       end
 
-      dsl.methods(false).each do |name|
+      dsl.define.methods(false).each do |name|
         self.define_singleton_method name do |*args, &block|
-          @__uspec_dsl.send name, *args, &block
+          @__uspec_dsl.define.send name, *args, &block
         end unless name.to_s.include? '__uspec'
       end
 
       if block then
-      self.define_singleton_method :__uspec_block, &block
+        self.define_singleton_method :__uspec_block, &block
       else
         self.define_singleton_method :__uspec_block do
           raise "Uspec: No block provided for `#{@__uspec_description}`"

@@ -74,8 +74,7 @@ class Uspec::CLI
       end
     elsif path.exist? then
       puts "#{path.basename path.extname}:"
-      #Uspec::Spec.new(harness, self).instance_eval(path.read, path.to_s)
-      harness.instance_eval(path.read, path.to_s)
+      harness.define.instance_eval(path.read, path.to_s)
     else
       warn "path not found: #{path}"
     end

@@ -6,10 +6,12 @@ module Uspec
 
     def initialize cli
       @__uspec_cli = cli
+      @__uspec_define = ::Uspec::Define.new self
     end
+    attr_accessor :__uspec_cli, :__uspec_define
 
-    def __uspec_cli
-      @__uspec_cli
+    def define
+      @__uspec_define
     end
 
     def __uspec_stats
