@@ -101,7 +101,7 @@ class Uspec::CLI
     MSG
     puts
     warn message
-    stats << Uspec::Result.new(message, error, caller)
+    stats << Uspec::Result.new(message, error, true, caller)
 
     handle_interrupt! error
   end

@@ -7,13 +7,14 @@ module Uspec
 
     PREFIX = "#{Uspec::Terminal.newline}#{Uspec::Terminal.yellow}>\t#{Uspec::Terminal.normal}"
 
-    def initialize spec, raw, source
+    def initialize spec, raw, ex, source
       @spec = spec
       @raw = raw
+      @ex = ex
       @source = source
       @handler = ::TOISB.wrap raw
     end
-    attr_reader :spec, :raw, :source, :handler
+    attr_reader :spec, :raw, :ex, :source, :handler
 
     def pretty
       if raw == true then
