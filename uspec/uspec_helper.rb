@@ -4,6 +4,7 @@ rescue LoadError => err
   nil
 end
 require 'open3'
+require 'stringio'
 
 require_relative '../lib/uspec'
 extend Uspec
