@@ -5,7 +5,7 @@ module Uspec
   class Result
     include Terminal
 
-    PREFIX = "#{Terminal.newline}#{Terminal.yellow}>\t#{Terminal.normal}"
+    PREFIX = "#{Uspec::Terminal.newline}#{Uspec::Terminal.yellow}>\t#{Uspec::Terminal.normal}"
 
     def initialize spec, raw, source
       @spec = spec

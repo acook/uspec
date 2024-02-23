@@ -6,7 +6,7 @@ module Uspec
 
     def initialize cli
       @cli = cli
-      @define = ::Uspec::Define.new self
+      @define = Uspec::Define.new self
     end
     attr_accessor :cli, :define
 
@@ -21,14 +21,14 @@ module Uspec
       if block then
         begin
           state = 1
-          raw_result = ::Uspec::Spec.new(self, description, &block).__uspec_block
+          raw_result = Uspec::Spec.new(self, description, &block).__uspec_block
           state = 2
         rescue Exception => raw_result
           state = 3
         end
       end
 
-      result = Result.new description, raw_result, caller
+      result = Uspec::Result.new description, raw_result, caller
 
       unless block then
         state = 4
