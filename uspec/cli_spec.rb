@@ -1,14 +1,5 @@
 require_relative 'uspec_helper'
 
-spec 'shows usage' do
-  output = capture do
-    exec 'bin/uspec -h'
-  end
-
-  output.include? 'usage'
-end
-
-
 def root
   Pathname.new(__FILE__).parent.parent
 end
@@ -27,6 +18,15 @@ end
 
 def run_specs path
   Uspec::CLI.new(Array(path)).run_specs
+end
+
+
+spec 'shows usage' do
+  output = capture do
+    exec 'bin/uspec -h'
+  end
+
+  output.include? 'usage'
 end
 
 spec 'runs a path of specs' do
@@ -70,7 +70,6 @@ spec 'exit code is the number of failures' do
   end
 
   actual = cli.exit_code
-
   actual == expected || output
 end
 
@@ -87,6 +86,5 @@ spec 'when more than 255 failures, exit status is 255' do
   end
 
   actual = cli.exit_code
-
   actual == expected || [$?, output]
 end
