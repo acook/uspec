@@ -8,7 +8,10 @@ module Uspec
       @__uspec_dsl = dsl
 
       dsl.define.instance_variables.each do |name|
-        self.instance_variable_set(name, @__uspec_dsl.define.instance_variable_get(name)) unless name.to_s.include? '@__uspec'
+        self.instance_variable_set(
+          name,
+          @__uspec_dsl.define.instance_variable_get(name)
+        ) unless name.to_s.include? '@__uspec'
       end
 
       dsl.define.methods(false).each do |name|
