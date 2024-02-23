@@ -42,3 +42,19 @@ ensure
   $stdout = old_stdout
   $stderr = old_stderr
 end
+
+def root
+  Pathname.new(__FILE__).parent.parent
+end
+
+def exdir
+  root.join('example_specs')
+end
+
+def specdir
+  root.join('uspec')
+end
+
+def testdir
+  specdir.join('test_specs')
+end

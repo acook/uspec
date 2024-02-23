@@ -1,21 +1,5 @@
 require_relative 'uspec_helper'
 
-def root
-  Pathname.new(__FILE__).parent.parent
-end
-
-def exdir
-  root.join('example_specs')
-end
-
-def specdir
-  root.join('uspec')
-end
-
-def testdir
-  specdir.join('test_specs')
-end
-
 def new_cli path  = '.'
   Uspec::CLI.new(Array(path))
 end
