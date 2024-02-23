@@ -5,6 +5,16 @@ module Uspec
     end
     attr :success, :failure, :pending
 
+    def << result
+      if result.success?
+        self.success << result
+      elsif result.pending?
+        self.pending << result
+      else
+        self.failure << result
+      end
+    end
+
     def clear_results!
       @success = Array.new
       @failure = Array.new
