@@ -2,7 +2,7 @@ require_relative "result"
 require_relative "spec"
 
 module Uspec
-  class DSL
+  class Harness
 
     def initialize cli
       @__uspec_cli = cli

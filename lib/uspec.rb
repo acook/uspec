@@ -1,5 +1,5 @@
 require_relative 'uspec/version'
-require_relative 'uspec/dsl'
+require_relative 'uspec/harness'
 require_relative 'uspec/stats'
 
 module Uspec

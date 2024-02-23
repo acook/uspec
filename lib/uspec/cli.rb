@@ -8,9 +8,9 @@ class Uspec::CLI
     @paths = args
     @pwd = Pathname.pwd.freeze
     @stats = Uspec::Stats.new
-    @dsl = Uspec::DSL.new self
+    @harness = Uspec::Harness.new self
   end
-  attr :stats, :dsl
+  attr :stats, :harness
 
   def usage
     warn "uspec v#{::Uspec::VERSION} - minimalistic ruby testing framework"
@@ -74,7 +74,8 @@ class Uspec::CLI
       end
     elsif path.exist? then
       puts "#{path.basename path.extname}:"
-      Uspec::Spec.new(dsl, self).instance_eval(path.read, path.to_s)
+      #Uspec::Spec.new(harness, self).instance_eval(path.read, path.to_s)
+      harness.instance_eval(path.read, path.to_s)
     else
       warn "path not found: #{path}"
     end
@@ -103,7 +104,7 @@ class Uspec::CLI
     warn message
     stats.failure << Uspec::Result.new(message, error, caller)
 
-    dsl.__uspec_cli.handle_interrupt! error
+    harness.__uspec_cli.handle_interrupt! error
   end
 
 end
