@@ -6,7 +6,7 @@ module Uspec
     end
 
     def spec description, &block
-      @__uspec_harness.spec description, &block
+      @__uspec_harness.spec_eval description, &block
     end
   end
 end

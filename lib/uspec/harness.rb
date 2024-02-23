@@ -14,7 +14,7 @@ module Uspec
       cli.stats
     end
 
-    def spec description, &block
+    def spec_eval description, &block
       state = 0
       print ' -- ', description
 
