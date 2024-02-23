@@ -27,10 +27,7 @@ module Uspec
           raise "Uspec: No block provided for `#{@__uspec_description}`"
         end
       end
-    end
+    end # initialize
 
-    def spec description, &block
-      @__uspec_harness.spec description, &block
-    end
   end
 end
