@@ -35,13 +35,7 @@ module Uspec
         result.pending!
       end
 
-      if result.success?
-        stats.success << result
-      elsif result.pending?
-        stats.pending << result
-      else
-        stats.failure << result
-      end
+      stats << result
 
       print ': ', result.pretty, "\n"
     rescue => error
@@ -55,7 +49,7 @@ module Uspec
       MSG
       puts
       warn message
-      stats.failure << Uspec::Result.new(message, error, caller)
+      stats << Uspec::Result.new(message, error, caller)
     ensure
       cli.handle_interrupt! result.raw
       return [state, error, result, raw_result]
