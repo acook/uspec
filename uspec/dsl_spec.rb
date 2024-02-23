@@ -21,9 +21,9 @@ spec 'catches even non-StandardError-subclass exceptions' do
 end
 
 spec 'Uspec exits when sent a termination signal' do
-  path =  Pathname.new(__FILE__).parent.join('test_specs', 'kill_this_spec')
+  path = testdir.join('kill_this_spec')
 
-  stdin, allout, thread = Open3.popen2e "uspec/test_specs/kill_this_script.sh \"#{path}\""
+  stdin, allout, thread = Open3.popen2e "#{testdir}/kill_this_script.sh \"#{path}\""
   stdin.close
   output = allout.read
 
@@ -50,10 +50,10 @@ spec 'complains when spec block returns non boolean' do
 end
 
 spec 'marks test as pending when no block supplied' do
-  path =  Pathname.new(__FILE__).parent.join('test_specs', 'pending_spec')
+  path = testdir.join('pending_spec')
 
   output = capture do
-    exec "bin/uspec #{path}"
+    exec "#{root}/bin/uspec #{path}"
   end
 
   output.include?('1 pending') || output
@@ -64,40 +64,40 @@ spec 'should not define DSL methods on arbitrary objects' do
 end
 
 spec 'when return used in spec, capture it as an error' do
-  path =  Pathname.new(__FILE__).parent.join('test_specs', 'return_spec')
+  path = testdir.join('return_spec')
 
   output = capture do
-    exec "bin/uspec #{path}"
+    exec "#{root}/bin/uspec #{path}"
   end
 
   output.include?('Invalid return') || output.include?('Spec did not return a boolean value') || output
 end
 
 spec 'when break used in spec, capture it as an error' do
-  path =  Pathname.new(__FILE__).parent.join('test_specs', 'break_spec')
+  path = testdir.join('break_spec')
 
   output = capture do
-    exec "bin/uspec #{path}"
+    exec "#{root}/bin/uspec #{path}"
   end
 
   output.include?('Invalid break') || output.include?('Spec did not return a boolean value') || output
 end
 
 spec 'when instance variables are defined in the DSL instance, they are available in the spec body' do
-  path =  Pathname.new(__FILE__).parent.join('test_specs', 'ivar_spec')
+  path = testdir.join('ivar_spec')
 
   output = capture do
-    exec "bin/uspec #{path}"
+    exec "#{root}/bin/uspec #{path}"
   end
 
   output.include?('1 successful') || output
 end
 
 spec 'when methods are defined in the DSL instance, they are available in the spec body' do
-  path =  Pathname.new(__FILE__).parent.join('test_specs', 'method_spec')
+  path = testdir.join('method_spec')
 
   output = capture do
-    exec "bin/uspec #{path}"
+    exec "#{root}/bin/uspec #{path}"
   end
 
   output.include?('1 successful') || output
