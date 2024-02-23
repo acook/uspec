@@ -1,8 +1,10 @@
 require_relative "uspec_helper"
 
 spec 'catches errors' do
-  output = capture do
-    spec 'exception' do
+  cli = new_cli
+
+  output = outstr do
+    cli.harness.define.spec 'exception' do
       raise 'test exception'
     end
   end
@@ -11,8 +13,10 @@ spec 'catches errors' do
 end
 
 spec 'catches even non-StandardError-subclass exceptions' do
-  output = capture do
-    spec 'not implemented error' do
+  cli = new_cli
+
+  output = outstr do
+    cli.harness.define.spec 'not implemented error' do
       raise ::NotImplementedError, 'test exception'
     end
   end
@@ -40,8 +44,10 @@ spec 'Uspec exits when sent a termination signal' do
 end
 
 spec 'complains when spec block returns non boolean' do
-  output = capture do
-    spec 'whatever' do
+  cli = new_cli
+
+  output = outstr do
+    cli.harness.define.spec 'whatever' do
       "string"
     end
   end
