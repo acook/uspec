@@ -5,17 +5,13 @@ module Uspec
   class Harness
 
     def initialize cli
-      @__uspec_cli = cli
-      @__uspec_define = ::Uspec::Define.new self
+      @cli = cli
+      @define = ::Uspec::Define.new self
     end
-    attr_accessor :__uspec_cli, :__uspec_define
+    attr_accessor :cli, :define
 
-    def define
-      @__uspec_define
-    end
-
-    def __uspec_stats
-      @__uspec_cli.stats
+    def stats
+      cli.stats
     end
 
     def spec description, &block
@@ -40,11 +36,11 @@ module Uspec
       end
 
       if result.success?
-        __uspec_stats.success << result
+        stats.success << result
       elsif result.pending?
-        __uspec_stats.pending << result
+        stats.pending << result
       else
-        __uspec_stats.failure << result
+        stats.failure << result
       end
 
       print ': ', result.pretty, "\n"
@@ -59,9 +55,9 @@ module Uspec
       MSG
       puts
       warn message
-      __uspec_stats.failure << Uspec::Result.new(message, error, caller)
+      stats.failure << Uspec::Result.new(message, error, caller)
     ensure
-      __uspec_cli.handle_interrupt! result.raw
+      cli.handle_interrupt! result.raw
       return [state, error, result, raw_result]
     end
   end

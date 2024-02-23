@@ -103,7 +103,7 @@ class Uspec::CLI
     warn message
     stats.failure << Uspec::Result.new(message, error, caller)
 
-    harness.__uspec_cli.handle_interrupt! error
+    handle_interrupt! error
   end
 
 end

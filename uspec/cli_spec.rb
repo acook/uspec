@@ -49,7 +49,7 @@ end
 spec 'exit code is the number of failures' do
   expected = 50
   output = capture do
-    @__uspec_dsl.__uspec_stats.clear_results! # because we're forking, we will have a copy of the current results
+    @__uspec_harness.stats.clear_results! # because we're forking, we will have a copy of the current results
 
     expected.times do |count|
       spec "fail ##{count + 1}" do
@@ -57,7 +57,7 @@ spec 'exit code is the number of failures' do
       end
     end
 
-    exit @__uspec_dsl.__uspec_cli.exit_code
+    exit @__uspec_harness.cli.exit_code
   end
   actual = $?.exitstatus
 
@@ -66,7 +66,7 @@ end
 
 spec 'when more than 255 failures, exit status is 255' do
   output = capture do
-    @__uspec_dsl.__uspec_stats.clear_results! # because we're forking, we will have a copy of the current results
+    @__uspec_harness.stats.clear_results! # because we're forking, we will have a copy of the current results
 
     500.times do
       spec 'fail' do
@@ -74,7 +74,7 @@ spec 'when more than 255 failures, exit status is 255' do
       end
     end
 
-    exit @__uspec_dsl.__uspec_cli.exit_code
+    exit @__uspec_harness.cli.exit_code
   end
 
   $?.exitstatus == 255 || [$?, output]

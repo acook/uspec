@@ -5,18 +5,18 @@ module Uspec
 
     def initialize dsl, description, &block
       @__uspec_description = description
-      @__uspec_dsl = dsl
+      @__uspec_harness = dsl
 
       dsl.define.instance_variables.each do |name|
         self.instance_variable_set(
           name,
-          @__uspec_dsl.define.instance_variable_get(name)
+          @__uspec_harness.define.instance_variable_get(name)
         ) unless name.to_s.include? '@__uspec'
       end
 
       dsl.define.methods(false).each do |name|
         self.define_singleton_method name do |*args, &block|
-          @__uspec_dsl.define.send name, *args, &block
+          @__uspec_harness.define.send name, *args, &block
         end unless name.to_s.include? '__uspec'
       end
 
@@ -30,7 +30,7 @@ module Uspec
     end
 
     def spec description, &block
-      @__uspec_dsl.spec description, &block
+      @__uspec_harness.spec description, &block
     end
   end
 end
