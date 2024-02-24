@@ -69,7 +69,7 @@ Output
 
 Uspec's output is in beautiful ANSI technicolor, with red for failures, green for successes, and yellow for pending specs.
 
-![Screenshot!](https://i.imgur.com/Baqggck.png)
+![uspec examples](https://github.com/acook/uspec/assets/71984/d6f5b29d-8f05-449f-a2a7-5500e240a444)
 
 A brief explanation of `uspec`'s output to show you what it can do!
 
