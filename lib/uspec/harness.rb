@@ -17,7 +17,6 @@ module Uspec
     def file_eval path
       define.instance_eval(path.read, path.to_s)
     rescue Exception => error
-
       if SignalException === error || SystemExit === error then
         exit 3
       end
@@ -42,7 +41,6 @@ module Uspec
       stats << Uspec::Result.new(message, error, true, caller)
 
       cli.handle_interrupt! error
-
     end
 
     def spec_eval description, &block
@@ -82,7 +80,7 @@ module Uspec
       MSG
       puts
       warn message
-      stats << Uspec::Result.new(message, error, caller)
+      stats << Uspec::Result.new(message, error, true, caller)
     ensure
       cli.handle_interrupt! result.raw
       return [state, error, result, raw_result]
