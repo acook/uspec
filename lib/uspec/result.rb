@@ -81,6 +81,16 @@ module Uspec
       "#{handler.subklassinfo}: "
     end
 
+    def desc
+      if String === spec then
+        spec
+      elsif Uspec::Spec === spec then
+        spec.instance_variable_get :@__uspec_description
+      else
+        spec.inspect
+      end
+    end
+
     # Attempts to inspect an object
     def inspector
       if String === raw && raw.include?(?\n) then
@@ -114,7 +124,7 @@ module Uspec
 
       If you think this is a bug in Uspec please report it: https://github.com/acook/uspec/issues/new
 
-      Error may have occured in test `#{spec}` in file `#{error_file}` on line ##{error_line}.
+      Error may have occured in test `#{desc}` in file `#{error_file}` on line ##{error_line}.
 
 \t#{error.backtrace.join "\n\t"}
       MSG
@@ -137,7 +147,7 @@ module Uspec
     end
 
     def inspect
-      "#{self.class} for `#{spec}` -> #{pretty}"
+      "#{self.class} for `#{desc}` -> #{pretty}"
     end
   end
 end

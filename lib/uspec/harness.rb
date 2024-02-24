@@ -51,7 +51,8 @@ module Uspec
       if block then
         begin
           state = 1
-          raw_result = Uspec::Spec.new(self, description, &block).__uspec_block
+          spec = Uspec::Spec.new(self, description, &block)
+          raw_result = spec.__uspec_block
           state = 2
         rescue Exception => raw_result
           state = 3
@@ -59,7 +60,7 @@ module Uspec
         end
       end
 
-      result = Uspec::Result.new description, raw_result, ex
+      result = Uspec::Result.new spec, raw_result, ex
 
       unless block then
         state = 4
