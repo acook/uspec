@@ -38,7 +38,7 @@ module Uspec
       MSG
       puts
       warn message
-      stats << Uspec::Result.new(message, error, true, caller)
+      stats << Uspec::Result.new(message, error, true)
 
       cli.handle_interrupt! error
     end
@@ -59,7 +59,7 @@ module Uspec
         end
       end
 
-      result = Uspec::Result.new description, raw_result, ex, caller
+      result = Uspec::Result.new description, raw_result, ex
 
       unless block then
         state = 4
@@ -80,7 +80,7 @@ module Uspec
       MSG
       puts
       warn message
-      stats << Uspec::Result.new(message, error, true, caller)
+      stats << Uspec::Result.new(message, error, true)
     ensure
       cli.handle_interrupt! result.raw
       return [state, error, result, raw_result]
