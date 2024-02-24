@@ -1,12 +1,12 @@
 require_relative 'spec_helper'
 
-spec 'I love passing tests' do
+spec 'I love passing tests! Passing tests return `true`' do
   true
 end
 
 spec "This is an idea, but I haven't written the test yet"
 
-spec 'This is a failing test' do
+spec 'This is a failing test. Failing tests return `false`' do
   false
 end
 
