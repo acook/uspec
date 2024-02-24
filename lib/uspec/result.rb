@@ -23,7 +23,7 @@ module Uspec
         red raw
       elsif pending? then
         yellow 'pending'
-      elsif Exception === raw then
+      elsif ex == true then
         [
           red('Exception'), vspace,
           hspace, 'Spec encountered an Exception ', newline,
@@ -32,6 +32,7 @@ module Uspec
           white(trace)
         ].join
       else
+        #if Exception === raw then
         [
           red('Failed'), vspace,
           hspace, 'Spec did not return a boolean value ', newline,
@@ -42,9 +43,10 @@ module Uspec
     end
 
     def trace
-      raw.backtrace.inject(String.new) do |text, line|
+      bt = raw.backtrace
+      bt.inject(String.new) do |text, line|
         text << "#{hspace}#{line}#{newline}"
-      end
+      end if bt
     end
 
     def message
@@ -59,10 +61,15 @@ module Uspec
     def inspector
       if String === raw && raw.include?(?\n) then
         # if object is a multiline string, display it unescaped
-
         [
           raw.split(newline).unshift(newline).join(PREFIX), normal, newline,
         ].join
+      elsif Exception === raw then
+        [
+          raw.message, vspace,
+          white(trace),
+          normal, newline,
+      ].join
       else
         handler.inspector!
       end

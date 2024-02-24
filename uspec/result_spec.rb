@@ -68,9 +68,36 @@ spec "display strings more like their actual contents" do
   actual.match?(expected) || result.inspector
 end
 
+def exception_value
+  raise "A test exception!"
+rescue => err
+  return err
+end
+
 spec "handles exception values" do
-  result = Uspec::Result.new "Exception Value Result", Exception, nil, []
-  expected = "Class < Module: \e[0mException Class"
+  result = Uspec::Result.new "Exception Value Result", exception_value, nil, caller
+  expected = "RuntimeError < StandardError: \e[0mA test exception!"
+  actual =  result.pretty
+  actual.include?(expected) || result.pretty
+end
+
+spec "handles exception values including backtraces" do
+  result = Uspec::Result.new "Exception Value Result", exception_value, nil, caller
+  expected = "exception_value"
+  actual =  result.pretty
+  actual.include?(expected) || result.pretty
+end
+
+spec "handles raised exceptions" do
+  result = Uspec::Result.new "Exception Raised Result", exception_value, true, caller
+  expected = "RuntimeError < StandardError: \e[0mA test exception!"
+  actual =  result.pretty
+  actual.include?(expected) || result.pretty
+end
+
+spec "handles raised exceptions without backtraces" do
+  result = Uspec::Result.new "Exception Raised Result", Exception.new, true, caller
+  expected = "Exception < Object: \e[0mException"
   actual =  result.pretty
   actual.include?(expected) || result.pretty
 end
