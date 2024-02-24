@@ -6,16 +6,15 @@ end
 
 spec "This is an idea, but I haven't written the test yet"
 
-spec 'Failing tests display a red' do
+spec 'This is a failing test' do
   false
 end
 
-spec 'Inspects non-boolean value that the spec block returns' do
+spec 'Non-boolean values are shown in detail' do
   'non-boolean value'
 end
 
-spec 'Displays informative exceptions' do
+spec 'Exceptions are handled and displayed' do
   class ExampleError < RuntimeError; end
   raise ExampleError
 end
-
