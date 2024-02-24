@@ -6,15 +6,17 @@ module Uspec
     include Terminal
 
     PREFIX = "#{Uspec::Terminal.newline}#{Uspec::Terminal.yellow}>\t#{Uspec::Terminal.normal}"
+    TRACE_EXCLUDE_PATTERN = /#{Uspec.libpath.join 'lib'}|#{Uspec.libpath.join 'bin'}/
 
-    def initialize spec, raw, ex, source
+    def initialize spec, raw, ex
       @spec = spec
       @raw = raw
       @ex = ex
-      @source = source
       @handler = ::TOISB.wrap raw
+      @full_backtrace = false
+      @caller = caller
     end
-    attr_reader :spec, :raw, :ex, :source, :handler
+    attr_reader :spec, :raw, :ex, :handler, :full_backtrace
 
     def pretty
       if raw == true then
@@ -32,7 +34,6 @@ module Uspec
           white(trace)
         ].join
       else
-        #if Exception === raw then
         [
           red('Failed'), vspace,
           hspace, 'Spec did not return a boolean value ', newline,
@@ -43,10 +44,33 @@ module Uspec
     end
 
     def trace
-      bt = raw.backtrace
+      @backtrace ||= indent_bt clean_bt(raw.backtrace, !full_backtrace)
+    end
+
+    def source
+      @source ||= clean_bt @caller
+    end
+
+    def indent_bt bt
       bt.inject(String.new) do |text, line|
         text << "#{hspace}#{line}#{newline}"
       end if bt
+    end
+
+    def clean_bt bt, skip_internal = true
+      bt.inject(Array.new) do |t, line|
+        next t if skip_internal && line.match(TRACE_EXCLUDE_PATTERN)
+        t << rewrite_bt_caller(line)
+      end if bt
+    end
+
+    def rewrite_bt_caller line
+      return line if full_backtrace
+      if line.match TRACE_EXCLUDE_PATTERN then
+        line
+      else
+        line.sub /file_eval/, 'spec_block'
+      end
     end
 
     def message
@@ -55,6 +79,16 @@ module Uspec
 
     def subklassinfo
       "#{handler.subklassinfo}: "
+    end
+
+    def desc
+      if String === spec then
+        spec
+      elsif Uspec::Spec === spec then
+        spec.instance_variable_get :@__uspec_description
+      else
+        spec.inspect
+      end
     end
 
     # Attempts to inspect an object
@@ -90,7 +124,7 @@ module Uspec
 
       If you think this is a bug in Uspec please report it: https://github.com/acook/uspec/issues/new
 
-      Error may have occured in test `#{spec}` in file `#{error_file}` on line ##{error_line}.
+      Error may have occured in test `#{desc}` in file `#{error_file}` on line ##{error_line}.
 
 \t#{error.backtrace.join "\n\t"}
       MSG
@@ -113,7 +147,7 @@ module Uspec
     end
 
     def inspect
-      "#{self.class} for `#{spec}` -> #{pretty}"
+      "#{self.class} for `#{desc}` -> #{pretty}"
     end
   end
 end

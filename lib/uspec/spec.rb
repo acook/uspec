@@ -5,6 +5,7 @@ module Uspec
 
     def initialize harness, description, &block
       @__uspec_description = description
+      @__uspec_block = block
       @__uspec_harness = harness
       ns = harness.define
 
