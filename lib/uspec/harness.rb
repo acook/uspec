@@ -15,6 +15,7 @@ module Uspec
     end
 
     def spec_eval description, &block
+      ex = nil
       state = 0
       print ' -- ', description
 
@@ -25,10 +26,11 @@ module Uspec
           state = 2
         rescue Exception => raw_result
           state = 3
+          ex = true
         end
       end
 
-      result = Uspec::Result.new description, raw_result, caller
+      result = Uspec::Result.new description, raw_result, ex, caller
 
       unless block then
         state = 4
