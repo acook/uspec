@@ -1,8 +1,3 @@
-require_relative 'uspec/version'
-require_relative 'uspec/harness'
-require_relative 'uspec/define'
-require_relative 'uspec/stats'
-
 module Uspec
   def self.included object
     warn 'Use extend instead of include.'
@@ -15,4 +10,13 @@ module Uspec
     #  object.extend Uspec::DSL
     #end
   end
+
+  def self.libpath
+    Pathname.new(__FILE__).dirname.dirname
+  end
 end
+
+require_relative 'uspec/version'
+require_relative 'uspec/harness'
+require_relative 'uspec/define'
+require_relative 'uspec/stats'

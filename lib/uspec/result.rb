@@ -6,7 +6,7 @@ module Uspec
     include Terminal
 
     PREFIX = "#{Uspec::Terminal.newline}#{Uspec::Terminal.yellow}>\t#{Uspec::Terminal.normal}"
-    TRACE_EXCLUDE_PATTERN = /uspec\/lib|bin\/uspec/
+    TRACE_EXCLUDE_PATTERN = /#{Uspec.libpath.join 'lib'}|#{Uspec.libpath.join 'bin'}/
 
     def initialize spec, raw, ex
       @spec = spec
