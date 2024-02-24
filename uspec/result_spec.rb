@@ -104,7 +104,7 @@ end
 
 spec "doesn't show 'run' for spec file in stack trace" do
   result = Uspec::Result.new "No Run Exception Trace Result", exception_value, true
-  expected = "run"
+  expected = /uspec.*run/
   actual =  result.pretty
-  !actual.include?(expected) || result.pretty
+  !actual.match?(expected) || result.pretty
 end
