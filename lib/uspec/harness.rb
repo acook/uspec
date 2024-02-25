@@ -20,7 +20,6 @@ module Uspec
       define.instance_eval(path.read, path.to_s)
     rescue Exception => error
       result = Uspec::Errors.handle_file_error error, path, cli
-    ensure
       stats << result if result
     end
 
