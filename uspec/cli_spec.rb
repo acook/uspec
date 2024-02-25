@@ -25,12 +25,20 @@ spec 'runs a path of specs' do
   output.include?('I love passing tests') || output
 end
 
-spec 'runs an individual spec' do
+spec 'runs an individual file' do
   output = outstr do
     run_specs exdir.join('example_spec.rb').to_s
   end
 
   output.include?('I love passing tests') || output
+end
+
+spec 'runs an individual spec' do
+  output = outstr do
+    run_specs exdir.join('example_spec.rb:13').to_s
+  end
+
+  !output.include?('I love passing tests') && output.include?('non-boolean') || output
 end
 
 spec 'broken requires in test files count as test failures' do

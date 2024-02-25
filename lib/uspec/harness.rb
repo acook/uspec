@@ -14,7 +14,9 @@ module Uspec
       cli.stats
     end
 
-    def file_eval path
+    def file_eval path, line
+      @path = path
+      @line = line
       define.instance_eval(path.read, path.to_s)
     rescue Exception => error
       if SignalException === error || SystemExit === error then
@@ -43,7 +45,9 @@ module Uspec
       cli.handle_interrupt! error
     end
 
-    def spec_eval description, &block
+    def spec_eval description, source, &block
+      return if @line && !source.first.include?("#{@path}:#{@line}")
+
       ex = nil
       state = 0
       print ' -- ', description
@@ -84,7 +88,7 @@ module Uspec
       warn message
       stats << result
     ensure
-      cli.handle_interrupt! result.raw
+      cli.handle_interrupt! result.raw if result
       return [state, error, result, raw_result]
     end
   end

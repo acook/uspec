@@ -67,17 +67,18 @@ class Uspec::CLI
   end
 
   def run path
-    spec = nil
+    p, line = path.to_s.split(?:)
+    path = Pathname.new p
+
     if path.directory? then
       Pathname.glob(path.join('**', '**_spec.rb')).each do |spec|
         run spec
       end
     elsif path.exist? then
       puts "#{path.basename path.extname}:"
-      harness.file_eval path
+      harness.file_eval path, line
     else
       warn "path not found: #{path}"
     end
   end
-
 end
