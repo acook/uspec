@@ -31,7 +31,7 @@ module Uspec
 
         If you think this is a bug in Uspec please report it: https://github.com/acook/uspec/issues/new
 
-        Error occured when loading test file `#{spec || path}`.
+        Error occured when loading test file `#{path}`.
         The origin of the error may be in file `#{error_file}` on line ##{error_line}.
 
   \t#{error.backtrace[0,3].join "\n\t"}
