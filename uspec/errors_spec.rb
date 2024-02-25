@@ -33,5 +33,5 @@ spec 'source errors are captured' do
   result = Uspec::Result.new "source error result", a, true
   output = result.inspector
 
-  output.include?('Uspec encountered an internal error') || output
+  output.include?('Uspec detected a bug in your source') || output
 end

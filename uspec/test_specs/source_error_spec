@@ -1,0 +1,8 @@
+spec "this spec will create a source error due to a broken inspect method" do
+  bo = BasicObject.new
+  def bo.inspect
+    invalid_for_source_error
+  end
+
+  [ bo ]
+end
