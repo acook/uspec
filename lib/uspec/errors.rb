@@ -14,18 +14,17 @@ module Uspec
         exit 3
       end
 
-      error_file, error_line, _ = error.backtrace.first.split ?:
+      error_bt   = bt_indent error.backtrace[0,3]
+      error_file = error_origin *error.backtrace.first.split(?:)
 
       message = <<~MSG
-        #{error.class} : #{error.message}
-
         Uspec encountered an error when loading a test file.
         This is probably a typo in the test file or the file it is testing.
 
         Error occured when loading test file `#{path}`.
-        The origin of the error may be in file `#{error_file}` on line ##{error_line}.
+        #{error_file}
 
-        #{bt_indent error.backtrace[0,3]}
+        #{error_bt}
 
         #{MSG_IF_USPEC_BUG}
       MSG
@@ -33,36 +32,37 @@ module Uspec
       result = Uspec::Result.new(message, error, true)
 
       puts
-      warn error_indent message
+      warn error_indent error, message
 
       cli.handle_interrupt! result.raw if cli
       result
     end
 
     def handle_internal_error error, cli = nil
-      message = <<-MSG
-      #{error.class} : #{error.message}
+      error_bt   = bt_indent error.backtrace
 
-      Uspec encountered an internal error, please report this bug: #{MSG_USPEC_BUG_URL}
+      message = <<~MSG
+        Uspec encountered an internal error!
 
-\t#{error.backtrace.join "\n\t"}
+        #{error_bt}
+
+        #{MSG_IF_USPEC_BUG}
       MSG
 
       result = Uspec::Result.new(message, error, true)
 
       puts
-      warn message
+      warn error_indent error, message
 
       cli.handle_interrupt! result.raw if cli
       result
     end
 
     def msg_source_error error, desc, cli = nil
-      error_file, error_line, _ = error.backtrace[4].split ?:
+      error_bt   = bt_indent error.backtrace
+      error_file = error_origin *error.backtrace[4].split(?:)
 
       message = <<~MSG
-        #{error.class} : #{error.message}
-
         Uspec detected a bug in your source code!
 
         Calling #inspect on an object will recusively call #inspect on its instance variables and contents.
@@ -70,19 +70,29 @@ module Uspec
         You will also get this message if your #inspect method or one of its callees raises an exception.
         This is most likely to happen with BasicObject and its subclasses.
 
-        Error may have occured in test `#{desc}` in file `#{error_file}` on line ##{error_line}.
+        Error occured when evaluating spec `#{desc}`.
+        #{error_file}
 
-        #{bt_indent error.backtrace}
+        #{error_bt}
 
         #{MSG_IF_USPEC_BUG}
       MSG
 
-      error_indent message
+      error_indent error, message, false
     end
 
-    def error_indent message
+    def error_header error
+      "#{error.class} : #{error.message}"
+    end
+
+    def error_origin error_file, error_line, *_
+      "The origin of the error may be in file `#{error_file}` on line ##{error_line}."
+    end
+
+    def error_indent error, message, first_line_indent = true
       a = message.split(newline)
-      a[0] = "#{hspace}#{a.first}"
+      a.unshift "#{hspace if first_line_indent}#{error_header error}#{newline}"
+      a << ""
       a.join("#{newline}#{hspace}")
     end
 
