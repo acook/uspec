@@ -110,24 +110,7 @@ module Uspec
     rescue Exception => error
       return handler.simple_inspector if error.message.include? handler.get_id
 
-      error_file, error_line, _ = error.backtrace[4].split ?:
-
-      <<-MSG
-
-      #{error.class} : #{error.message}
-
-      Uspec detected a bug in your source code!
-      Calling #inspect on an object will recusively call #inspect on its instance variables and contents.
-      If one of those contained objects does not have an #inspect method you will see this message.
-      You will also get this message if your #inspect method or one of its callees raises an exception.
-      This is most likely to happen with BasicObject and its subclasses.
-
-      If you think this is a bug in Uspec please report it: https://github.com/acook/uspec/issues/new
-
-      Error may have occured in test `#{desc}` in file `#{error_file}` on line ##{error_line}.
-
-\t#{error.backtrace.join "\n\t"}
-      MSG
+      Uspec::Errors.msg_source_error error, desc
     end
 
     def success?

@@ -21,3 +21,17 @@ spec 'internal errors are captured' do
 
   output.include?('Uspec encountered an internal error') || output
 end
+
+spec 'source errors are captured' do
+  bo = BasicObject.new
+  def bo.inspect
+    invalid_for_source_error
+  end
+
+  a = [ bo ]
+
+  result = Uspec::Result.new "source error result", a, true
+  output = result.inspector
+
+  output.include?('Uspec encountered an internal error') || output
+end
