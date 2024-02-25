@@ -79,9 +79,10 @@ module Uspec
 
 \t#{error.backtrace.join "\n\t"}
       MSG
+      result = Uspec::Result.new(message, error, true)
       puts
       warn message
-      stats << Uspec::Result.new(message, error, true)
+      stats << result
     ensure
       cli.handle_interrupt! result.raw
       return [state, error, result, raw_result]
