@@ -19,30 +19,9 @@ module Uspec
       @line = line
       define.instance_eval(path.read, path.to_s)
     rescue Exception => error
-      if SignalException === error || SystemExit === error then
-        exit 3
-      end
-
-      error_file, error_line, _ = error.backtrace.first.split ?:
-
-      message = <<-MSG
-        #{error.class} : #{error.message}
-
-        Uspec encountered an error when loading a test file.
-        This is probably a typo in the test file or the file it is testing.
-
-        If you think this is a bug in Uspec please report it: https://github.com/acook/uspec/issues/new
-
-        Error occured when loading test file `#{path}`.
-        The origin of the error may be in file `#{error_file}` on line ##{error_line}.
-
-  \t#{error.backtrace[0,3].join "\n\t"}
-      MSG
-      puts
-      warn message
-      stats << Uspec::Result.new(message, error, true)
-
-      cli.handle_interrupt! error
+      result = Uspec::Errors.handle_file_error error, path, cli
+    ensure
+      stats << result if result
     end
 
     def spec_eval description, source, &block
@@ -71,24 +50,12 @@ module Uspec
         result.pending!
       end
 
-      stats << result
-
       print ': ', result.pretty, "\n"
     rescue => error
-      state = 5
-      message = <<-MSG
-        #{error.class} : #{error.message}
-
-        Uspec encountered an internal error, please report this bug: https://github.com/acook/uspec/issues/new
-
-\t#{error.backtrace.join "\n\t"}
-      MSG
-      result = Uspec::Result.new(message, error, true)
-      puts
-      warn message
-      stats << result
+      result = Uspec::Errors.handle_internal_error error, cli
     ensure
-      cli.handle_interrupt! result.raw if result
+      stats << result if result
+      cli.handle_interrupt! result ? result.raw : raw_result
       return [state, error, result, raw_result]
     end
   end

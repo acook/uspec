@@ -59,3 +59,11 @@ end
 def testdir
   specdir.join('test_specs')
 end
+
+def new_cli path  = '.'
+  Uspec::CLI.new(Array(path))
+end
+
+def run_specs path
+  new_cli(path).run_specs
+end
