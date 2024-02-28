@@ -9,6 +9,8 @@ require 'stringio'
 require_relative '../lib/uspec'
 extend Uspec
 
+Uspec::Errors.full_backtrace!
+
 def capture
   readme, writeme = IO.pipe
   pid = fork do
