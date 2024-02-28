@@ -16,5 +16,5 @@ end
 
 spec 'Exceptions are handled and displayed' do
   class ExampleError < RuntimeError; end
-  raise ExampleError
+  raise ExampleError, "an example error for demonstration"
 end
