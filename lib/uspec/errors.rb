@@ -115,7 +115,7 @@ module Uspec
         error_origin(*error_file),
         white(bt_format(origin, skip_internal)),
         MSG_IF_USPEC_BUG
-    ].join ?\n
+      ].join ?\n
     end
 
     def error_origin error_file, error_line, *_
