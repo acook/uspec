@@ -8,6 +8,7 @@ module Uspec
 
     MSG_USPEC_BUG_URL = "https://github.com/acook/uspec/issues/new"
     MSG_IF_USPEC_BUG  = "If you think this is a bug in Uspec please report it: #{MSG_USPEC_BUG_URL}"
+    TRACE_EXCLUDE_PATTERN = /#{Uspec.libpath.join 'lib'}|#{Uspec.libpath.join 'bin'}/
 
     def handle_file_error error, path, cli = nil
       if SignalException === error || SystemExit === error then
@@ -34,7 +35,7 @@ module Uspec
     end
 
     def handle_internal_error error, cli = nil
-      error_info = error_context error.backtrace.first.split(?:), error.backtrace
+      error_info = error_context error.backtrace.first.split(?:), error.backtrace, false
 
       message = <<~MSG
         Uspec encountered an internal error!
@@ -48,6 +49,30 @@ module Uspec
 
       cli.handle_interrupt! result.raw if cli
       result
+    end
+
+    def msg_spec_error error, desc
+      if error.backtrace then
+        origin = error.backtrace.first.split(?:)
+      else
+        origin = caller.first.split(?:)
+      end
+
+      error_info = error_context origin, error.backtrace
+
+
+      info = <<~MSG
+        Error occured when evaluating spec `#{desc}`.
+        #{error_info}
+      MSG
+      body = error_indent error, info
+
+      message = <<~MSG
+        #{red 'Exception'}
+        #{body}
+      MSG
+
+      message
     end
 
     def msg_source_error error, desc, cli = nil
@@ -68,14 +93,12 @@ module Uspec
       error_indent error, message, false
     end
 
-    def error_context error_file, error_bt
-      message = <<~MSG
-        #{error_origin *error_file}
-
-        #{bt_indent error_bt}
-
-        #{MSG_IF_USPEC_BUG}
-      MSG
+    def error_context error_file, error_bt, skip_internal = true
+      [
+        error_origin(*error_file),
+        white(bt_format(error_bt, skip_internal)),
+        MSG_IF_USPEC_BUG
+    ].join ?\n
     end
 
     def error_origin error_file, error_line, *_
@@ -84,18 +107,53 @@ module Uspec
 
     def error_indent error, message, first_line_indent = true
       a = message.split(newline)
-      a.unshift "#{hspace if first_line_indent}#{error_header error}#{newline}"
+      a.unshift "\n#{hspace if first_line_indent}#{error_header error}#{newline}"
       a << ""
       a.join("#{newline}#{hspace}")
     end
 
     def error_header error
-      "#{error.class} : #{error.message}"
+      "#{red subklassinfo error}#{error.message}"
+    end
+
+    def subklassinfo obj
+      "#{::TOISB.wrap(obj).subklassinfo}: "
+    end
+
+    def bt_format bt, skip_internal = true
+      bt_indent bt_clean(bt, skip_internal)
     end
 
     def bt_indent bt
-      "#{hspace}" + bt.join("#{newline}#{hspace}") if bt
+      "#{newline}#{hspace}" + bt.join("#{newline}#{hspace}") + newline if bt
     end
 
+    def bt_clean bt, skip_internal = true
+      bt.inject(Array.new) do |t, line|
+        next t if skip_internal && line.match(TRACE_EXCLUDE_PATTERN)
+        t << bt_rewrite_caller(line)
+      end if bt
+    end
+
+    def bt_rewrite_caller line
+      return line if full_backtrace?
+      if line.match TRACE_EXCLUDE_PATTERN then
+        line
+      else
+        line.sub /file_eval/, 'spec_block'
+      end
+    end
+
+    def full_backtrace?
+      @full_backtrace
+    end
+
+    def full_backtrace!
+      @full_backtrace = true
+    end
+
+    def clean_backtrace!
+      @full_backtrace = false
+    end
   end
 end

@@ -6,7 +6,6 @@ module Uspec
     include Terminal
 
     PREFIX = "#{Uspec::Terminal.newline}#{Uspec::Terminal.yellow}>\t#{Uspec::Terminal.normal}"
-    TRACE_EXCLUDE_PATTERN = /#{Uspec.libpath.join 'lib'}|#{Uspec.libpath.join 'bin'}/
 
     def initialize spec, raw, ex
       @spec = spec
@@ -26,13 +25,7 @@ module Uspec
       elsif pending? then
         yellow 'pending'
       elsif ex == true then
-        [
-          red('Exception'), vspace,
-          hspace, 'Spec encountered an Exception ', newline,
-          hspace, 'in spec at ', source.first, vspace,
-          hspace, message, vspace,
-          white(trace)
-        ].join
+        Uspec::Errors.msg_spec_error raw, desc
       else
         [
           red('Failed'), vspace,
@@ -43,38 +36,8 @@ module Uspec
       end
     end
 
-    def trace
-      @backtrace ||= indent_bt clean_bt(raw.backtrace, !full_backtrace)
-    end
-
     def source
-      @source ||= clean_bt @caller
-    end
-
-    def indent_bt bt
-      bt.inject(String.new) do |text, line|
-        text << "#{hspace}#{line}#{newline}"
-      end if bt
-    end
-
-    def clean_bt bt, skip_internal = true
-      bt.inject(Array.new) do |t, line|
-        next t if skip_internal && line.match(TRACE_EXCLUDE_PATTERN)
-        t << rewrite_bt_caller(line)
-      end if bt
-    end
-
-    def rewrite_bt_caller line
-      return line if full_backtrace
-      if line.match TRACE_EXCLUDE_PATTERN then
-        line
-      else
-        line.sub /file_eval/, 'spec_block'
-      end
-    end
-
-    def message
-      "#{red subklassinfo}#{raw.message}"
+      @source ||= Uspec::Errors.bt_clean @caller
     end
 
     def subklassinfo
@@ -101,7 +64,7 @@ module Uspec
       elsif Exception === raw then
         [
           raw.message, vspace,
-          white(trace),
+          white(Uspec::Errors.bt_clean raw.backtrace),
           normal, newline,
       ].join
       else
