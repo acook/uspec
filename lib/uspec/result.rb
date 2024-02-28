@@ -62,11 +62,7 @@ module Uspec
           raw.split(newline).unshift(newline).join(PREFIX), normal, newline,
         ].join
       elsif Exception === raw then
-        [
-          raw.message, vspace,
-          white(Uspec::Errors.bt_clean raw.backtrace),
-          normal, newline,
-      ].join
+        Uspec::Errors.msg_spec_value raw
       else
         handler.inspector!
       end

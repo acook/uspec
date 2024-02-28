@@ -75,6 +75,23 @@ module Uspec
       message
     end
 
+    def msg_spec_value error
+      if error.backtrace then
+        bt = error.backtrace
+      else
+        bt = caller
+      end
+
+      error_info = white bt_format bt
+
+      message = <<~MSG
+      #{error.message}
+      #{error_info}
+      MSG
+
+      error_indent error, message, header: false
+    end
+
     def msg_source_error error, desc, cli = nil
       error_info = error_context error.backtrace[4].split(?:), error.backtrace
 
@@ -90,13 +107,13 @@ module Uspec
         #{error_info}
       MSG
 
-      error_indent error, message, false
+      error_indent error, message, first_line_indent: false
     end
 
-    def error_context error_file, error_bt, skip_internal = true
+    def error_context error_file, origin, skip_internal = true
       [
         error_origin(*error_file),
-        white(bt_format(error_bt, skip_internal)),
+        white(bt_format(origin, skip_internal)),
         MSG_IF_USPEC_BUG
     ].join ?\n
     end
@@ -105,9 +122,9 @@ module Uspec
       "The origin of the error may be in file `#{error_file}` on line ##{error_line}."
     end
 
-    def error_indent error, message, first_line_indent = true
+    def error_indent error, message, first_line_indent: true, header: true
       a = message.split(newline)
-      a.unshift "\n#{hspace if first_line_indent}#{error_header error}#{newline}"
+      a.unshift "\n#{hspace if first_line_indent}#{error_header error}#{newline}" if header
       a << ""
       a.join("#{newline}#{hspace}")
     end
