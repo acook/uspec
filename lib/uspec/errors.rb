@@ -78,10 +78,6 @@ module Uspec
       MSG
     end
 
-    def error_header error
-      "#{error.class} : #{error.message}"
-    end
-
     def error_origin error_file, error_line, *_
       "The origin of the error may be in file `#{error_file}` on line ##{error_line}."
     end
@@ -91,6 +87,10 @@ module Uspec
       a.unshift "#{hspace if first_line_indent}#{error_header error}#{newline}"
       a << ""
       a.join("#{newline}#{hspace}")
+    end
+
+    def error_header error
+      "#{error.class} : #{error.message}"
     end
 
     def bt_indent bt
