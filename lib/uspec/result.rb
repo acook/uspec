@@ -27,12 +27,7 @@ module Uspec
       elsif ex == true then
         Uspec::Errors.msg_spec_error raw, desc
       else
-        [
-          red('Failed'), vspace,
-          hspace, 'Spec did not return a boolean value ', newline,
-          hspace, 'in spec at ', source.first, vspace,
-          hspace, red(subklassinfo), inspector, (Class === raw ? ' Class' : ''), newline
-        ].join
+        nonboolean
       end
     end
 
@@ -54,6 +49,22 @@ module Uspec
       end
     end
 
+    def nonboolean
+      [
+        red('Failed'), vspace,
+        hspace, 'Spec did not return a boolean value ', newline,
+        hspace, 'in spec at ', source.first, vspace,
+        hspace, red(subklassinfo), inspector, (Class === raw ? ' Class' : ''), newline
+      ].join
+    rescue Exception => error
+      return handler.simple_inspector if error.message.include? handler.get_id
+
+      [
+        red('Failed'), newline,
+        Uspec::Errors.msg_source_error(error, desc),
+      ].join
+    end
+
     # Attempts to inspect an object
     def inspector
       if String === raw && raw.include?(?\n) then
@@ -66,10 +77,6 @@ module Uspec
       else
         handler.inspector!
       end
-    rescue Exception => error
-      return handler.simple_inspector if error.message.include? handler.get_id
-
-      Uspec::Errors.msg_source_error error, desc
     end
 
     def success?

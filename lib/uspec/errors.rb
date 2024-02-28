@@ -29,6 +29,7 @@ module Uspec
 
       message = <<~MSG
         Uspec encountered an internal error!
+
         #{error_info}
       MSG
 
@@ -39,7 +40,7 @@ module Uspec
       result = Uspec::Result.new(message, error, true)
 
       puts
-      warn error_indent error, message
+      warn error_format error, message, leading_newline: false
 
       cli.handle_interrupt! result.raw if cli
       result
@@ -52,7 +53,7 @@ module Uspec
         Error occured when evaluating spec `#{desc}`.
         #{error_info}
       MSG
-      body = error_indent error, info
+      body = error_format error, info, first_line_indent: false
 
       message = <<~MSG
         #{red 'Exception'}
@@ -63,14 +64,14 @@ module Uspec
     end
 
     def msg_spec_value error
-      error_info = white bt_format(bt_get error)
+      error_info = white bt_format(bt_get error).chomp
 
       message = <<~MSG
         #{error.message}
         #{error_info}
       MSG
 
-      error_indent error, message, header: false
+      error_format error, message, header: false
     end
 
     def msg_source_error error, desc, cli = nil
@@ -88,7 +89,7 @@ module Uspec
         #{error_info}
       MSG
 
-      error_indent error, message
+      error_format error, message, first_line_indent: false
     end
 
     def error_context error, skip_internal: true
@@ -109,9 +110,21 @@ module Uspec
       "The origin of the error may be in file `#{error_file}` on line ##{error_line}."
     end
 
-    def error_indent error, message, first_line_indent: true, leading_newline: true, header: true
+    def error_format error, message, first_line_indent: true, leading_newline: true, header: true
+      h = ""
+
+      if header then
+        h << newline if leading_newline
+        h << hspace if first_line_indent
+        h << error_header(error)
+        h << vspace
+      end
+
+      error_indent(error, h + message)
+    end
+
+    def error_indent error, message
       a = message.split(newline)
-      a.unshift "#{newline if leading_newline}#{hspace if first_line_indent}#{error_header error}#{newline}" if header
       a << ""
       a.join("#{newline}#{hspace}")
     end
