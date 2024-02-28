@@ -15,7 +15,7 @@ module Uspec
         exit 3
       end
 
-      error_info = error_context error.backtrace.first.split(?:), error.backtrace[0,3]
+      error_info = error_context error
 
       message = <<~MSG
         Uspec encountered an error when loading a test file.
@@ -35,7 +35,7 @@ module Uspec
     end
 
     def handle_internal_error error, cli = nil
-      error_info = error_context error.backtrace.first.split(?:), error.backtrace, false
+      error_info = error_context error, skip_internal: false
 
       message = <<~MSG
         Uspec encountered an internal error!
@@ -52,14 +52,7 @@ module Uspec
     end
 
     def msg_spec_error error, desc
-      if error.backtrace then
-        origin = error.backtrace.first.split(?:)
-      else
-        origin = caller.first.split(?:)
-      end
-
-      error_info = error_context origin, error.backtrace
-
+      error_info = error_context error
 
       info = <<~MSG
         Error occured when evaluating spec `#{desc}`.
@@ -93,7 +86,7 @@ module Uspec
     end
 
     def msg_source_error error, desc, cli = nil
-      error_info = error_context error.backtrace[4].split(?:), error.backtrace
+      error_info = error_context error
 
       message = <<~MSG
         Uspec detected a bug in your source code!
@@ -107,13 +100,19 @@ module Uspec
         #{error_info}
       MSG
 
-      error_indent error, message, first_line_indent: false
+      error_indent error, message
     end
 
-    def error_context error_file, origin, skip_internal = true
+    def error_context error, skip_internal: true
+      if error.backtrace then
+        bt = error.backtrace
+      else
+        bt = caller[2..-1]
+      end
+      error_line = bt.first.split(?:)
       [
-        error_origin(*error_file),
-        white(bt_format(origin, skip_internal)),
+        error_origin(*error_line),
+        white(bt_format(bt, skip_internal)),
         MSG_IF_USPEC_BUG
       ].join ?\n
     end
@@ -122,9 +121,9 @@ module Uspec
       "The origin of the error may be in file `#{error_file}` on line ##{error_line}."
     end
 
-    def error_indent error, message, first_line_indent: true, header: true
+    def error_indent error, message, first_line_indent: true, leading_newline: true, header: true
       a = message.split(newline)
-      a.unshift "\n#{hspace if first_line_indent}#{error_header error}#{newline}" if header
+      a.unshift "#{newline if leading_newline}#{hspace if first_line_indent}#{error_header error}#{newline}" if header
       a << ""
       a.join("#{newline}#{hspace}")
     end
@@ -138,6 +137,7 @@ module Uspec
     end
 
     def bt_format bt, skip_internal = true
+      skip_internal = skip_internal && !full_backtrace?
       bt_indent bt_clean(bt, skip_internal)
     end
 
