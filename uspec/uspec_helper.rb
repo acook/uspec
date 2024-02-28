@@ -1,5 +1,6 @@
 begin
-  require 'pry'
+  require 'bundler'
+  Bundler.require(:test, :development)
 rescue LoadError => err
   nil
 end
