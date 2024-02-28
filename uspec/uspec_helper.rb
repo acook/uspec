@@ -9,6 +9,8 @@ require 'stringio'
 require_relative '../lib/uspec'
 extend Uspec
 
+Uspec::Errors.full_backtrace!
+
 def capture
   readme, writeme = IO.pipe
   pid = fork do
@@ -58,4 +60,12 @@ end
 
 def testdir
   specdir.join('test_specs')
+end
+
+def new_cli path  = '.'
+  Uspec::CLI.new(Array(path))
+end
+
+def run_specs path
+  new_cli(path).run_specs
 end

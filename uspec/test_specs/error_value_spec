@@ -1,0 +1,8 @@
+class ErrorValue < StandardError
+end
+
+spec "error value spec" do
+  raise ErrorValue, "A test exception!"
+rescue ErrorValue => err
+  return err
+end

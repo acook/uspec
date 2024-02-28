@@ -1,14 +1,5 @@
 require_relative 'uspec_helper'
 
-def new_cli path  = '.'
-  Uspec::CLI.new(Array(path))
-end
-
-def run_specs path
-  new_cli(path).run_specs
-end
-
-
 spec 'shows usage' do
   output = capture do
     exec 'bin/uspec -h'

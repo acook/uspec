@@ -17,6 +17,7 @@ module Uspec
 end
 
 require_relative 'uspec/version'
+require_relative 'uspec/errors'
 require_relative 'uspec/harness'
 require_relative 'uspec/define'
 require_relative 'uspec/stats'

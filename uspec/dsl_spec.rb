@@ -4,7 +4,7 @@ spec 'catches errors' do
   cli = new_cli
 
   output = outstr do
-    cli.harness.define.spec 'exception' do
+    cli.harness.define.spec 'exception spec' do
       raise 'test exception'
     end
   end
