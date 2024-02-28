@@ -58,5 +58,11 @@ module Uspec
       cli.handle_interrupt! result ? result.raw : raw_result
       return [state, error, result, raw_result]
     end
+
+    def inspect
+      <<~MSG.chomp
+        <#{self.class}##{self.object_id} @cli=#{@cli ? '<...>' : @cli} @define=#{@define ? '<...>' : @define}>
+      MSG
+    end
   end
 end
