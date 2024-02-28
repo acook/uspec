@@ -103,8 +103,12 @@ spec "handles raised exceptions without backtraces" do
 end
 
 spec "doesn't show 'run' for spec file in stack trace" do
+  Uspec::Errors.clean_backtrace!
+
   result = Uspec::Result.new "No Run Exception Trace Result", exception_value, true
   expected = /uspec.*run/
   actual =  result.pretty
+
+  Uspec::Errors.full_backtrace!
   !actual.match?(expected) || result.pretty
 end
