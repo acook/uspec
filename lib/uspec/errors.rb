@@ -14,19 +14,14 @@ module Uspec
         exit 3
       end
 
-      error_bt   = bt_indent error.backtrace[0,3]
-      error_file = error_origin *error.backtrace.first.split(?:)
+      error_info = error_context error.backtrace.first.split(?:), error.backtrace[0,3]
 
       message = <<~MSG
         Uspec encountered an error when loading a test file.
         This is probably a typo in the test file or the file it is testing.
 
         Error occured when loading test file `#{path}`.
-        #{error_file}
-
-        #{error_bt}
-
-        #{MSG_IF_USPEC_BUG}
+        #{error_info}
       MSG
 
       result = Uspec::Result.new(message, error, true)
@@ -39,14 +34,11 @@ module Uspec
     end
 
     def handle_internal_error error, cli = nil
-      error_bt   = bt_indent error.backtrace
+      error_info = error_context error.backtrace.first.split(?:), error.backtrace
 
       message = <<~MSG
         Uspec encountered an internal error!
-
-        #{error_bt}
-
-        #{MSG_IF_USPEC_BUG}
+        #{error_info}
       MSG
 
       result = Uspec::Result.new(message, error, true)
@@ -59,8 +51,7 @@ module Uspec
     end
 
     def msg_source_error error, desc, cli = nil
-      error_bt   = bt_indent error.backtrace
-      error_file = error_origin *error.backtrace[4].split(?:)
+      error_info = error_context error.backtrace[4].split(?:), error.backtrace
 
       message = <<~MSG
         Uspec detected a bug in your source code!
@@ -71,14 +62,20 @@ module Uspec
         This is most likely to happen with BasicObject and its subclasses.
 
         Error occured when evaluating spec `#{desc}`.
-        #{error_file}
-
-        #{error_bt}
-
-        #{MSG_IF_USPEC_BUG}
+        #{error_info}
       MSG
 
       error_indent error, message, false
+    end
+
+    def error_context error_file, error_bt
+      message = <<~MSG
+        #{error_origin *error_file}
+
+        #{bt_indent error_bt}
+
+        #{MSG_IF_USPEC_BUG}
+      MSG
     end
 
     def error_header error
