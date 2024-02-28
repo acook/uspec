@@ -15,7 +15,7 @@ class Uspec::CLI
     warn "usage: #{File.basename $0} [<file_or_path>...]"
     warn ""
     warn "\t\t--full_backtrace\tshow full backtrace"
-    warn "\t\t--\tstop checking paths for options (good if a path begins with a dash)"
+    warn "\t\t--\t\t\tstop checking paths for options (good if a path begins with a dash)"
     exit 1
   end
 
@@ -87,14 +87,14 @@ class Uspec::CLI
   end
 
   def parse_options args
-    usage unless (args & %w[-h --help -? /? -v --version]).empty?
-
     args.each_with_index do |arg, i|
       if arg == '--' then
         return args
       elsif arg == '--full_backtrace' then
         Uspec::Errors.full_backtrace!
         args.delete_at i
+      elsif !(args & %w[-h --help -? /? -v --version]).empty?
+        usage
       elsif arg[0] == ?- then
         warn "unknown option: #{arg}"
         args.delete_at i
