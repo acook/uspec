@@ -25,13 +25,7 @@ module Uspec
         #{error_info}
       MSG
 
-      result = Uspec::Result.new(message, error, true)
-
-      puts
-      warn error_indent error, message
-
-      cli.handle_interrupt! result.raw if cli
-      result
+      handle_error message, error, cli
     end
 
     def handle_internal_error error, cli = nil
@@ -42,6 +36,10 @@ module Uspec
         #{error_info}
       MSG
 
+      handle_error message, error, cli
+    end
+
+    def handle_error message, error, cli
       result = Uspec::Result.new(message, error, true)
 
       puts
