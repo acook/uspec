@@ -63,17 +63,11 @@ module Uspec
     end
 
     def msg_spec_value error
-      if error.backtrace then
-        bt = error.backtrace
-      else
-        bt = caller
-      end
-
-      error_info = white bt_format bt
+      error_info = white bt_format(bt_get error)
 
       message = <<~MSG
-      #{error.message}
-      #{error_info}
+        #{error.message}
+        #{error_info}
       MSG
 
       error_indent error, message, header: false
@@ -98,17 +92,17 @@ module Uspec
     end
 
     def error_context error, skip_internal: true
-      if error.backtrace then
-        bt = error.backtrace
-      else
-        bt = caller[2..-1]
-      end
+      bt = bt_get error
       error_line = bt.first.split(?:)
       [
         error_origin(*error_line),
         white(bt_format(bt, skip_internal)),
         MSG_IF_USPEC_BUG
       ].join ?\n
+    end
+
+    def bt_get error
+      error.backtrace || caller[3..-1]
     end
 
     def error_origin error_file, error_line, *_
