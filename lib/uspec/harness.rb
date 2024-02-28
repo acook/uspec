@@ -19,6 +19,7 @@ module Uspec
       @line = line
       define.instance_eval(path.read, path.to_s)
     rescue Exception => error
+      raise error if SystemExit === error
       result = Uspec::Errors.handle_file_error error, path, cli
       stats << result if result
     end

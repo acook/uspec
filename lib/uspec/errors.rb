@@ -11,10 +11,6 @@ module Uspec
     TRACE_EXCLUDE_PATTERN = /#{Uspec.libpath.join 'lib'}|#{Uspec.libpath.join 'bin'}/
 
     def handle_file_error error, path, cli = nil
-      if SignalException === error || SystemExit === error then
-        exit 3
-      end
-
       error_info = error_context error
 
       message = <<~MSG
