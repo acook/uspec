@@ -56,13 +56,7 @@ module Uspec
         hspace, 'in spec at ', source.first, vspace,
         hspace, red(subklassinfo), inspector, (Class === raw ? ' Class' : ''), newline
       ].join
-    rescue Exception => error
-      return handler.simple_inspector if error.message.include? handler.get_id
 
-      [
-        red('Failed'), newline,
-        Uspec::Errors.msg_source_error(error, desc),
-      ].join
     end
 
     # Attempts to inspect an object
@@ -77,6 +71,13 @@ module Uspec
       else
         handler.inspector!
       end
+    rescue Exception => error
+      return handler.simple_inspector if error.message.include? handler.get_id
+
+      [
+        red('Unable to Inspect Object'), newline,
+        Uspec::Errors.msg_source_error(error, desc),
+      ].join
     end
 
     def success?
