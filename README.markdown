@@ -44,7 +44,7 @@ Quickstart
     - `gem install uspec`
     - `echo 'gem "uspec"' >> Gemfile && bundle install`
 2. Create a `uspec` directory to keep your specs in
-3. Name your specs ending with `_spec.rb`
+3. Name your specs ending with `_spec.rb` in the `uspec` subdirectory (by convention)
 4. Write some specs in Ruby using the `spec` method (example above)
 5. Use the included `uspec` executable to run your specs
 
@@ -60,8 +60,8 @@ usage: uspec [<file_or_path>...]
 ```
 
 - Without arguments the `uspec` command will automatically look for a `uspec` directory and load any `*_spec.rb` files inside it.
+- If you pass in a list of directories `uspec` will scan for and run any `*_spec.rb` files inside them.
 - You can also pass in arbitrary files and it will attempt to run them as specs.
-- If you pass in directories `uspec` will scan for and run any specs inside them.
 - Uspec will return the number of failures as its exit status code to the or `0` if none.
 
 Output
