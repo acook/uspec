@@ -25,7 +25,7 @@ Uspec is tiny, painless, and easy to use. Download it and give it a try!
 Writing Tests
 ----------
 
-Uspec is deceptively simple. You only need to remember one method: `spec`. 
+Uspec is deceptively simple. You only need to remember one method: `spec`.
 
 Writing a spec is easy:
 
@@ -240,7 +240,7 @@ If the wrong Exception is raised, then because of reraising (by just calling `ra
 Mocks, Spies, Stubs, and More!
 -----------------------
 
-Since `uspec` is a very straight forward testing utility it is easy to use any of the standard Ruby mocking frameworks with it. However, the [Impasta gem](https://github.com/acook/impasta) was made specifically for simple but comprehensive mocking, stubbing, and spying.
+Since `uspec` is a very straight forward testing utility it is easy to use any of the standard Ruby mocking frameworks with it. However, the [Impasta gem](https://codeberg.org/acook/impasta) was made specifically for simple but comprehensive mocking, stubbing, and spying.
 
 Contributing
 ------------

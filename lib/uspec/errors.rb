@@ -6,7 +6,7 @@ module Uspec
 
     extend Uspec::Terminal
 
-    MSG_USPEC_BUG_URL = "https://github.com/acook/uspec/issues/new"
+    MSG_USPEC_BUG_URL = "https://codeberg.org/acook/uspec/issues/new"
     MSG_IF_USPEC_BUG  = "If you think this is a bug in Uspec please report it: #{MSG_USPEC_BUG_URL}"
     TRACE_EXCLUDE_PATTERN = /#{Uspec.libpath.join 'lib'}|#{Uspec.libpath.join 'bin'}/
 
